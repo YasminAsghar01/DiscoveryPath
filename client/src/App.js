@@ -18,11 +18,11 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/projects" element={<ProjectPage />} />
-            <Route path="/pathways" element={<PathwayPage />}/>
-            <Route path="/messages" element={<h1>Messages page</h1>} />
+            <Route path="/pathways" element={<PathwayPage />} />
             <Route path="/profile" element={<h1>Profile page</h1>} />
             <Route path="/achievements" element={<h1>Learning and Achievements page</h1>} />
             <Route path="/favourites" element={<h1>Favourites page</h1>} />
+            <Route path="/messages" element={<h1>Messages page</h1>} />
             <Route path="/logout" element={<h1>Logout page</h1>} />
           </Routes>
         </BrowserRouter>

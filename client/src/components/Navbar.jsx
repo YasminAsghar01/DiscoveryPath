@@ -7,10 +7,11 @@ import {
   Popper,
   IconButton,
   Divider,
-  Link
+  Link,
+  Avatar
 } from "@mui/material";
 import React from "react";
-import Avatar from '@mui/material/Avatar';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -25,11 +26,9 @@ const StyledPopper = styled(Popper)(() => ({
 
 const StyledPopperDiv = styled("div")(() => ({
   maxWidth: "300px",
-  borderRadius: "5px",
-  borderColor: "red",
+  borderRadius: "10px",
   border: "1.75px solid #2D5592",
-  padding: "1rem",
-  margin: "0.25rem 0px",
+  padding: "15px",
 }));
 
 const linkStyle = {
@@ -84,7 +83,7 @@ const Navbar = () => {
 
   return (
     <AppBar position="relative">
-      <StyledToolbar sx={{ borderBottom: 2, borderBottomColor: "#2D5592"}}>
+      <StyledToolbar sx={{ borderBottom: 2, borderBottomColor: "#2D5592" }}>
         <StyledButton
           href="/"
           style={linkStyle}
@@ -97,10 +96,9 @@ const Navbar = () => {
         <StyledButton
           href="/projects"
           style={linkStyle}
-          sx={{ marginLeft: 0, marginRight: 50}}
-
+          sx={{ marginLeft: 0, marginRight: 50 }}
         >
-          <Typography variant="span" sx={{ fontWeight: 400, fontSize: 17 }}>
+          <Typography variant="span" sx={{ fontWeight: 400, fontSize: 17 }} style={{ fontWeight: window.location.pathname === '/projects' ? 'bold' : 'null', textDecoration: window.location.pathname === '/projects' ? 'underline 10px' : 'null' }}>
             Projects
           </Typography>
         </StyledButton>
@@ -109,21 +107,22 @@ const Navbar = () => {
           style={linkStyle}
           sx={{ marginLeft: 0, marginRight: "auto" }}
         >
-          <Typography variant="span" sx={{ fontWeight: 400, fontSize: 17 }}>
+          <Typography variant="span" sx={{ fontWeight: 400, fontSize: 17 }} style={{ fontWeight: window.location.pathname === '/pathways' ? 'bold' : 'null', textDecoration: window.location.pathname === '/pathways' ? 'underline 10px' : 'null' }}>
             Pathways
           </Typography>
         </StyledButton>
-        <IconButton
-          aria-label=""
-          aria-describedby={id}
-          disableFocusRipple={true}
-          size="small"
-          sx={{ marginTop: 7, marginRight: 15 }}
-          onClick={handleClick}
-        >
-          <Avatar {...stringAvatar('Yasmin Asghar')} />
-        </IconButton>
-
+        <ClickAwayListener onClickAway={handleClose}>
+          <IconButton
+            aria-label=""
+            aria-describedby={id}
+            disableFocusRipple={true}
+            size="small"
+            sx={{ marginTop: 7, marginRight: 15 }}
+            onClick={handleClick}
+          >
+            <Avatar {...stringAvatar('Yasmin Asghar')} />
+          </IconButton>
+        </ClickAwayListener>
         <StyledPopper
           id={id}
           placement="bottom-end"
@@ -132,14 +131,28 @@ const Navbar = () => {
           onClose={handleClose}
         >
           <StyledPopperDiv>
-            <Link href="/profile"  sx={{ textDecoration: "none", color: "black" }}>
+            <Typography
+              sx={{
+                fontSize: 17,
+                fontWeight: 600,
+                padding: 5,
+                textDecoration: "underline",
+                textAlign: "center",
+              }}
+            >
+              My Details:
+            </Typography>
+
+            <Link href="/profile" sx={{ textDecoration: "none", color: "black" }} >
               <Typography
                 sx={{
                   fontSize: 15,
                   fontWeight: 400,
                   marginLeft: 0,
                   marginRight: 50,
+                  padding: 5,
                 }}
+                style={{ fontWeight: window.location.pathname === '/profile' ? 'bold' : 'null' }}
               >
                 Profile
               </Typography>
@@ -152,7 +165,9 @@ const Navbar = () => {
                   fontWeight: 400,
                   marginLeft: 0,
                   marginRight: 50,
+                  padding: 5
                 }}
+                style={{ fontWeight: window.location.pathname === '/achievements' ? 'bold' : 'null' }}
               >
                 Learning and Achievements
               </Typography>
@@ -165,9 +180,11 @@ const Navbar = () => {
                   fontWeight: 400,
                   marginLeft: 0,
                   marginRight: 50,
+                  padding: 5
                 }}
+                style={{ fontWeight: window.location.pathname === '/favourites' ? 'bold' : 'null' }}
               >
-                Achievements
+                Favourites
               </Typography>
             </Link>
             <Divider sx={{ paddingBottom: 4 }} />
@@ -178,7 +195,9 @@ const Navbar = () => {
                   fontWeight: 400,
                   marginLeft: 0,
                   marginRight: 50,
+                  padding: 5
                 }}
+                style={{ fontWeight: window.location.pathname === '/messages' ? 'bold' : 'null' }}
               >
                 Messages
               </Typography>
@@ -191,7 +210,9 @@ const Navbar = () => {
                   fontWeight: 400,
                   marginLeft: 0,
                   marginRight: 70,
+                  padding: 5
                 }}
+                style={{ fontWeight: window.location.pathname === '/logout' ? 'bold' : 'null' }}
               >
                 Log out
               </Typography>

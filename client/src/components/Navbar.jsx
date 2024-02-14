@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
+import { jwtDecode } from "jwt-decode";
+import { useLocation } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -66,7 +68,7 @@ function stringAvatar(name) {
   };
 }
 
-const Navbar = () => {
+const Navbar = ({onLogout}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const open = Boolean(anchorEl);
@@ -80,6 +82,21 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    // Call the onLogout function when logout is clicked
+    onLogout();
+  };
+
+  const token = localStorage.getItem("token");
+
+  // Decode the token
+  const decodedToken = jwtDecode(token);
+
+  // Access user information from the decoded token
+
+  const userName = decodedToken.name;
+  console.log(typeof(userName))
 
   return (
     <AppBar position="relative">
@@ -120,7 +137,7 @@ const Navbar = () => {
             sx={{ marginTop: 7, marginRight: 15 }}
             onClick={handleClick}
           >
-            <Avatar {...stringAvatar('Yasmin Asghar')} />
+            <Avatar {...stringAvatar(userName)} />
           </IconButton>
         </ClickAwayListener>
         <StyledPopper
@@ -143,7 +160,7 @@ const Navbar = () => {
               My Details:
             </Typography>
 
-            <Link href="/profile" sx={{ textDecoration: "none", color: "black" }} >
+            <Link href={`/profile/${userName}`} sx={{ textDecoration: "none", color: "black" }} >
               <Typography
                 sx={{
                   fontSize: 15,
@@ -152,7 +169,7 @@ const Navbar = () => {
                   marginRight: 50,
                   padding: 5,
                 }}
-                style={{ fontWeight: window.location.pathname === '/profile' ? 'bold' : 'null' }}
+                style={{ fontWeight: window.location.pathname === `/profile/${encodeURIComponent(userName)}` ? 'bold' : 'null' }}
               >
                 Profile
               </Typography>
@@ -203,7 +220,7 @@ const Navbar = () => {
               </Typography>
             </Link>
             <Divider sx={{ paddingBottom: 4 }} />
-            <Link href="/logout" sx={{ textDecoration: "none", color: "black" }}>
+            <Link  onClick={handleLogout} sx={{ textDecoration: "none", color: "black", cursor: "pointer" }}>
               <Typography
                 sx={{
                   fontSize: 15,

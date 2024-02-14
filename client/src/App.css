@@ -29,7 +29,14 @@
   background-color: white !important;
 }
 
+.login:hover {
+  background-color: rgb(79, 115, 162)  !important;
+}
 
+.project-button:hover {
+  background-color: rgb(79, 115, 162) !important;
+  z-index: 1;
+}
 .App-link {
   color: #61dafb;
 }
@@ -41,4 +48,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
+  padding: 11px 14px
 }

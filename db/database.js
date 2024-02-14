@@ -1,10 +1,21 @@
-const mysql = require('mysql2/promise');
+const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  database: 'discoverypath',
-  user: 'root',
-  password: 'Database12!'
-});
+// Connection URI
+const uri = 'mongodb://localhost:27017/discoverypath';
 
-module.exports = pool;
+// Create a new MongoClient
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect to the MongoDB server
+async function connectToMongo() {
+  try {
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('Connected to MongoDB using Mongoose');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
+}
+
+// Call the function to connect
+module.exports = { connectToMongo, client };

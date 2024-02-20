@@ -6,11 +6,18 @@ import CardContent from '@mui/material/CardContent';
 import {
   Typography,
   Avatar,
-  Box
+  Box,
+  Button,
+  MenuItem,
+  Alert
 } from "@mui/material";
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
+import { PieChart } from '@mui/x-charts/PieChart';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 function stringToColor(string) {
   let hash = 0;
@@ -39,12 +46,12 @@ function stringAvatar(name) {
   };
 }
 
-
-
 export default function Pathway() {
 
   const [data, setData] = React.useState(null);
-  // Access the dynamic route parameter
+  const [openSkill, setOpenSkill] = React.useState(false);
+  const [openProject, setOpenProject] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
   const { userName } = useParams();
 
   React.useEffect(() => {
@@ -60,7 +67,130 @@ export default function Pathway() {
     };
 
     fetchData();
-  }, [userName]);
+  }, [userName, data?.skills, data?.project_experience]);
+
+  var skills = []
+  if (data?.skills.length > 0) {
+    data?.skills.map((skill) => {
+      if (skill.proficiency_level === 'Beginner') {
+        skills.push({ label: skill?.name, value: 1 })
+      }
+      if (skill.proficiency_level === 'Intermediate') {
+        skills.push({ label: skill?.name, value: 2 })
+      }
+      if (skill.proficiency_level === 'Advanced') {
+        skills.push({ label: skill?.name, value: 3 })
+      }
+    })
+  }
+  else {
+    skills = [{ label: 'Outlook', value: 20 }]
+  }
+
+  const handleClickOpenSkill = () => {
+    setOpenSkill(true);
+  };
+
+  const handleCloseSkill = () => {
+    setOpenSkill(false);
+  };
+
+  const handleClickOpenProject = () => {
+    setOpenProject(true);
+  };
+
+  const handleCloseProject = () => {
+    setOpenProject(false);
+  };
+
+  const levels = [
+    {
+      value: 'Beginner',
+
+    },
+    {
+      value: 'Intermediate',
+
+    },
+    {
+      value: 'Advanced',
+
+    },
+
+  ];
+
+  const handleSubmitSkill = async (event) => {
+    const data = new FormData(event.currentTarget);
+    console.log(data)
+    const formData = {
+      name: data.get('name'),
+      level: data.get('level'),
+    };
+    console.log(JSON.stringify(formData))
+    try {
+      const url = `http://localhost:3001/profile/${userName}/skills`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(formData),
+
+      });
+      console.log(response)
+      if (!response.ok) {
+        setSuccess(false)
+        throw new Error('Adding skill failed');
+      }
+      setSuccess(true)
+      console.log('test')
+
+    } catch (error) {
+      console.error('Adding skill failed:', error.message);
+      setSuccess(false);
+    }
+  };
+
+
+  const [skill, setSkill] = React.useState([]);
+
+  const handleChange = (event) => {
+    const input = event.target.value;
+    const skillArray = input.split(',').map((s) => s.trim());
+    setSkill(skillArray);
+  };
+
+  const handleSubmitProject = async (event) => {
+    const data = new FormData(event.currentTarget);
+    console.log(data)
+    const formData = {
+      name: data.get('name'),
+      date: data.get('date').toString(),
+      role: data.get('role'),
+      skills: skill,
+
+    };
+    console.log(JSON.stringify(formData))
+    try {
+      const url = `http://localhost:3001/profile/${userName}/experience`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(formData),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error('Adding project experience failed');
+      }
+      console.log('test')
+    } catch (error) {
+      console.error('Adding project experience failed:', error.message);
+    }
+  };
 
   return (
     <>
@@ -92,6 +222,7 @@ export default function Pathway() {
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={8}>
           <Card sx={{ height: 175, width: 700, marginRight: 80, marginTop: 20, backgroundColor: '#F7F5F5' }}>
             <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Organisation Details' />
@@ -128,60 +259,165 @@ export default function Pathway() {
       <Grid container spacing={600}>
         <Grid item xs={4}>
           <Card sx={{ height: 400, width: 600, marginLeft: 50, marginTop: 60, backgroundColor: '#F7F5F5' }}>
-            <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Contact Details' />
+            <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='My Skills' />
             <CardContent>
               <Box display="flex" >
-                <Box marginRight={2}>
-                  <Avatar alt={userName} style={{ width: 60, height: 55, marginLeft: 25, marginTop: 10 }} {...stringAvatar(userName)} />
-                </Box>
-                <Box>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Name: {data?.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Email Address: {data?.email}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Work Number: {data?.work_number}
-                  </Typography>
-                </Box>
+                <PieChart
+                  series={[
+                    {
+                      data: skills,
+                      highlightScope: { faded: 'global', highlighted: 'item' },
+                      faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                    },
+                  ]}
+                  width={500}
+                  height={300}
+                />
+                <Button onClick={handleClickOpenSkill} variant="outlined" style={{ marginLeft: -30, marginTop: -30, fontSize: 13, maxHeight: 35, minWidth: 100, color: 'black', borderColor: 'rgb(45,93,154)' }}> Add skill </Button>
+                <Dialog
+                  open={openSkill}
+                  onClose={handleCloseSkill}
+                  PaperProps={{
+                    component: 'form',
+                    onSubmit: async (event) => {
+                      event.preventDefault();
+                      await handleSubmitSkill(event);
+                    },
+                  }}
+                >
+                  <DialogTitle textAlign={'center'}>Add a new skill</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      autoFocus
+                      required
+                      margin="dense"
+                      id="name"
+                      name="name"
+                      label="Skill Name"
+                      type="name"
+                      fullWidth
+                      variant="standard"
+                    />
+                    <TextField
+                      autoFocus
+                      defaultValue={'Beginner'}
+                      margin="dense"
+                      id="level"
+                      name="level"
+                      label="Proficiency Level"
+                      select
+                      fullWidth
+                    >
+                      {levels.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.value}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseSkill}>Cancel</Button>
+                    <Button type="submit">Save</Button>
+                    {success && <Alert severity="success">This is a success Alert.</Alert>} {/* NOT WORKING */}
+                  </DialogActions>
+                </Dialog>
               </Box>
             </CardContent>
           </Card>
         </Grid>
+
         <Grid item xs={8}>
-          <Card sx={{ height: 400, width: 600, margin: 55, marginTop: 60, backgroundColor: '#F7F5F5' }}>
-            <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Organisation Details' />
-            <CardContent >
-              <Box display="flex" >
-                <Box marginLeft={60}>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Grade: {data?.grade}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Team: {data?.team}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Performance Manager: {data?.manager}
-                  </Typography>
-                </Box>
-                <Box marginLeft={50}>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} sx={{ textAlign: 'left' }} paddingLeft={10}>
-                    Cost Centre: {data?.cost_centre}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Role: {data?.role}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
-                    Home Office: {data?.home_office}
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
+          <Card sx={{ height: 400, width: 600, margin: 55, marginTop: 60, backgroundColor: '#F7F5F5', overflow: 'auto' }}>
+            <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Project Experience' />
+            <Box display="flex" marginLeft={450} marginTop={-20} marginBottom={5} >
+              <Button onClick={handleClickOpenProject} variant="outlined" style={{ marginRight: -5, fontSize: 13, maxHeight: 35, minWidth: 100, color: 'black', borderColor: 'rgb(45,93,154)' }}> Add project </Button>
+            </Box>
+            <Dialog
+              open={openProject}
+              onClose={handleCloseProject}
+
+              PaperProps={{
+                component: 'form',
+                onSubmit: async (event) => {
+                  event.preventDefault();
+                  await handleSubmitProject(event);
+                },
+              }}
+            >
+              <DialogTitle textAlign={'center'}>Add a new project experience</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  required
+                  margin="dense"
+                  id="name"
+                  name="name"
+                  label="Project Name"
+                  type="name"
+                  fullWidth
+                  variant="standard"
+                />
+                <TextField
+                  autoFocus
+                  required
+                  margin="dense"
+                  id="date"
+                  name="date"
+                  label="End Date"
+                  type="date"
+                  fullWidth
+                  variant="standard"
+                  InputLabelProps={{
+                    shrink: true,
+                    style: { marginTop: '5px' }
+                  }}
+                  InputProps={{ style: { marginTop: '15px' } }}
+                />
+                <TextField
+                  autoFocus
+                  required
+                  margin="dense"
+                  id="role"
+                  name="role"
+                  label="Role"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                />
+                <TextField
+                  autoFocus
+                  required
+                  margin="dense"
+                  id="skills"
+                  name="skills"
+                  label="Skills gained"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={skill.join(', ')}
+                  onChange={handleChange}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseProject}>Cancel</Button>
+                <Button type="submit">Save</Button>
+              </DialogActions>
+            </Dialog>
+            {data?.project_experience.map((option) => (
+              <CardContent >
+                <Card sx={{ height: 120, width: 500, marginLeft: 30, backgroundColor: 'white' }}>
+                  <CardContent sx={{ textAlign: 'left' }}>
+                    <Typography sx={{ fontSize: '15px' }}>Name: {option.name}</Typography>
+                    <Typography sx={{ fontSize: '15px' }}>End date: {option.end_date}</Typography>
+                    <Typography sx={{ fontSize: '15px' }}>Role: {option.role}</Typography>
+                    <Typography sx={{ fontSize: '15px' }}>Skills gained: {option?.skills_gained.join(', ')}</Typography>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            ))}
           </Card>
         </Grid>
       </Grid>
-
     </>
   )
 }

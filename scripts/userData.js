@@ -20,7 +20,14 @@ const EmployeesData = [
     team: 'Software Engineering',
     home_office: 'Canary Wharf',
     manager: 'Susan Gett',
-    technologies: ['Python', 'GitHub'],
+    skills: [
+      {name: 'Python', proficiency_level: 'Beginner'},
+      {name: 'GitHub', proficiency_level: 'Advanced'},
+    ],
+    project_experience: [
+      {name: 'Project X', role: 'QA Tester', skills_gained: ['Python','AWS'], end_date: '2022-10-02'},
+      {name: 'Project Y', role: 'Business Analyst', skills_gained: ['Python'], end_date: '2023-10-05'},
+    ],
   },
   {
     name: 'Jane Asghar',
@@ -34,7 +41,15 @@ const EmployeesData = [
     team: 'Cloud Engineering',
     home_office: 'Canary Wharf',
     manager: 'Susan1 Gett',
-    technologies: ['Python', 'AWS'],
+    skills: [
+      {name: 'Python', proficiency_level: 'Beginner'},
+      {name: 'Excel', proficiency_level: 'Intermediate'},
+    ],
+    project_experience: [
+      {name: 'Project Z', role: 'Senior Software Engineer', skills_gained: ['JavaScript','Azure', 'Kubernetes'], end_date: '2022-08-03'},
+      {name: 'Project 1', role: 'Cyber Security Engineer', skills_gained: ['Python'], end_date: '2022-12-02'},
+      {name: 'Project 2', role: 'Software Engineer Apprentice', skills_gained: ['Python', 'GCP'], end_date: '2022-05-09'},
+    ],
   },
 ];
 

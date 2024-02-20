@@ -8,12 +8,14 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ProjectCard({ cardcontent }) {
   const navigate = useNavigate();
+  
   const onReserve = () => { // Event handler for the "Make Reservation" button.
     window.scrollTo(0, 0); // Scroll to the top of the page.
     navigate(`/pathways/${encodeURIComponent(cardcontent.name)}`, { // Navigate to the "/make-reservation" route.
       state: {
         pathway: cardcontent, // Pass the `location` prop as state to this route.
-      }} )
+      }
+    })
   }
 
   return (
@@ -27,11 +29,11 @@ export default function ProjectCard({ cardcontent }) {
           Duration: {cardcontent.duration}
         </Typography>
         <div style={{ marginTop: 'auto', paddingTop: 15 }}>
-            <Button onClick={onReserve} variant="contained" className="project-button" style={{
-              backgroundColor: '#2D5592', color: 'white', height: 25
-            }} >
-              See more detail
-            </Button>
+          <Button onClick={onReserve} variant="contained" className="project-button" style={{
+            backgroundColor: '#2D5592', color: 'white', height: 25
+          }} >
+            See more detail
+          </Button>
         </div>
       </CardContent>
     </Card>

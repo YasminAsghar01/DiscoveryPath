@@ -13,7 +13,20 @@ const employeeSchema = new mongoose.Schema({
   team: {type: String, required: true },
   home_office: {type: String, required: true },
   manager: {type: String, required: true },
-  technologies: { type: [String], default: [] },
+  skills: [
+    {
+      name: {type: String, required: true },
+      proficiency_level: {type: String, required: true, default:'Beginner'},
+    }
+  ],
+  project_experience: [
+    {
+      name: {type: String, required: true },
+      role: {type: String, required: true},
+      skills_gained: { type: [String], default: [] },
+      end_date: {type: String, required: true},
+    }
+  ]
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);

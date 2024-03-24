@@ -4,29 +4,27 @@ const router = express.Router();
 const { Employee } = require('../models/employee');
 
 // Get a specific pathway by name
-router.get('/:userName', async (req, res) => {
-
-  const { userName } = req.params;
+router.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
 
   try {
-    const employee = await Employee.findOne({ name: userName });
+    const employee = await Employee.findOne({ employee_id: userId });
     if (!employee) {
       return res.status(404).json({ error: 'Employee not found' });
     }
     res.json(employee);
-
+    return
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-router.post('/:userName/skills', async (req, res) => {
-
-  const { userName } = req.params;
+router.post('/:userId/skills', async (req, res) => {
+  const { userId } = req.params;
 
   try {
-    const employee = await Employee.findOne({ name: userName });
+    const employee = await Employee.findOne({ employee_id: userId });
     if (!employee) {
       return res.status(404).json({ error: 'Employee not found' });
     }
@@ -34,11 +32,15 @@ router.post('/:userName/skills', async (req, res) => {
     const addSkill = {
       $push: { skills: [{name: req.body.name, proficiency_level: req.body.level}] } // Add a new attribute to the document
     };
-    const result = await Employee.updateOne({ name: userName }, addSkill);
+    const result = await Employee.updateOne({ employee_id: userId }, addSkill);
     if (result.modifiedCount === 1) {
       console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
     } else {
-      console.log('No documents matched the filter');
+      console.log('No documents matched the filter 1');
+      res.sendStatus(401)
+      return
     }
   } catch (error) {
     console.error(error);
@@ -46,24 +48,145 @@ router.post('/:userName/skills', async (req, res) => {
   }
 });
 
-router.post('/:userName/experience', async (req, res) => {
+router.post('/:userId/experience', async (req, res) => {
 
-  const { userName } = req.params;
+  const { userId } = req.params;
 
   try {
-    const employee = await Employee.findOne({ name: userName });
+    const employee = await Employee.findOne({ employee_id: userId  });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+    const addExperience = {
+      $push: { project_experience: [{name: req.body.name, role: req.body.role, skills_gained: req.body.skills, end_date: req.body.date}]}
+    };
+    const result = await Employee.updateOne({ employee_id: userId  }, addExperience);
+    if (result.modifiedCount === 1) {
+      console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
+    } else {
+      console.log('No documents matched the filter 2 ');
+      res.sendStatus(401)
+      return
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/:userId/favouriteProject', async (req, res) => {
+
+  const { userId } = req.params;
+
+  try {
+    const employee = await Employee.findOne({ employee_id: userId });
     if (!employee) {
       return res.status(404).json({ error: 'Employee not found' });
     }
       // also if skills exists just update with new level
-    const addExperience = {
-      $push: { project_experience: [{name: req.body.name, role: req.body.role, skills_gained: req.body.skills, end_date: req.body.date}] } // Add a new attribute to the document
+    const addFavourite = {
+      $push: { favouriteProjects: [req.body.name] } // Add a new attribute to the document
     };
-    const result = await Employee.updateOne({ name: userName }, addExperience);
+    const result = await Employee.updateOne({ employee_id: userId }, addFavourite);
     if (result.modifiedCount === 1) {
       console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
+
     } else {
-      console.log('No documents matched the filter');
+      console.log('No documents matched the filter 3');
+      res.sendStatus(401)
+      return
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.delete('/:userId/favouriteProject/:projectName', async (req, res) => {
+
+  const { userId, projectName } = req.params;
+
+  try {
+    const employee = await Employee.findOne({ employee_id: userId });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+      // also if skills exists just update with new level
+    const deleteFavourite = {
+      $pull: { favouriteProjects: projectName } // Add a new attribute to the document
+    };
+    const result = await Employee.updateOne({ employee_id: userId }, deleteFavourite);
+    if (result.modifiedCount === 1) {
+      console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
+    } else {
+      console.log('No documents matched the filter 4');
+      res.sendStatus(401)
+      return
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/:userId/favouritePathway', async (req, res) => {
+
+  const { userId } = req.params;
+
+  try {
+    const employee = await Employee.findOne({ employee_id: userId });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+      // also if skills exists just update with new level
+    const addFavourite = {
+      $push: { favouritePathways: [req.body.name] } // Add a new attribute to the document
+    };
+    const result = await Employee.updateOne({ employee_id: userId }, addFavourite);
+    if (result.modifiedCount === 1) {
+      console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
+
+    } else {
+      console.log('No documents matched the filter 3');
+      res.sendStatus(401)
+      return
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.delete('/:userId/favouritePathway/:pathwayName', async (req, res) => {
+
+  const { userId, pathwayName } = req.params;
+
+  try {
+    const employee = await Employee.findOne({ employee_id: userId });
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
+      // also if skills exists just update with new level
+    const deleteFavourite = {
+      $pull: { favouritePathways: pathwayName } // Add a new attribute to the document
+    };
+    const result = await Employee.updateOne({ employee_id: userId }, deleteFavourite);
+    if (result.modifiedCount === 1) {
+      console.log('Document updated successfully');
+      res.sendStatus(200)
+      return
+    } else {
+      console.log('No documents matched the filter 4');
+      res.sendStatus(401)
+      return
     }
   } catch (error) {
     console.error(error);

@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, Grid, Container, ClickAwayListener, Grow, ButtonGroup, Popper, Paper, MenuItem, MenuList, Divider } from "@mui/material";
+import { Button, Grid, Container, ClickAwayListener, Grow, ButtonGroup, Popper, Paper, Divider } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { ArrowDropDown } from "@mui/icons-material";
-import { Box, TextField, InputAdornment, IconButton } from '@mui/material'
-import { Search } from '@mui/icons-material'
+import { Box, TextField } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useState } from 'react'
 import Accordion from '@mui/material/Accordion';
@@ -17,21 +16,187 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import SearchBar from "./Searchbar";
 import FilterDropdown from "./FilterDropdown";
+import { jwtDecode } from "jwt-decode";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import Tooltip from '@mui/material/Tooltip';
 
+const AddProjectButton = ({ setReloadProjects }) => {
+  const [openProject, setOpenProject] = React.useState(false);
+  const [technologies, setTechnologies] = React.useState([]);
+
+  const handleClickOpenProject = () => {
+    setOpenProject(true);
+  };
+
+  const handleCloseProject = () => {
+    setOpenProject(false);
+  };
+
+  const handleTechChange = (event) => {
+    const input = event.target.value;
+    const techArray = input.split(',').map((s) => s.trim());
+    setTechnologies(techArray);
+  };
+
+  const handleSubmitProject = async (event) => {
+    const data = new FormData(event.currentTarget);
+    const formData = {
+      name: data.get('name'),
+      description: data.get('description'),
+      start_date: data.get('start_date').toString(),
+      end_date: data.get('end_date').toString(),
+      project_lead: data.get('project_lead'),
+      technologies: technologies,
+    };
+    console.log(JSON.stringify(formData))
+    try {
+      const url = `http://localhost:3001/projects/${formData.name}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(formData),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error('Adding project failed');
+      }
+    } catch (error) {
+      console.error('Adding project failed:', error.message);
+    }
+  };
+
+  return (
+    <>
+      <Tooltip title="Add project" arrow>
+        <Button className="addskillbutton" onClick={handleClickOpenProject}
+          style={{
+            marginLeft: 55, fontSize: 15, maxHeight: 35, minWidth: 50,
+          }}>
+          <AddBoxIcon sx={{ color: '#2D5592', fontSize: 42 }} /></Button>
+      </Tooltip>
+      <Dialog
+        open={openProject}
+        onClose={handleCloseProject}
+        PaperProps={{
+          component: 'form',
+          onSubmit: async (event) => {
+            event.preventDefault();
+            await handleSubmitProject(event);
+            setReloadProjects(true)
+          },
+        }}
+      >
+        <DialogTitle textAlign={'center'}>Add a new project</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="name"
+            label="Project Name"
+            type="name"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="description"
+            name="description"
+            label="Description"
+            type="text"
+            fullWidth
+            multiline
+            maxRows={4}
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="start_date"
+            name="start_date"
+            label="Start Date"
+            type="date"
+            fullWidth
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+              style: { marginTop: '5px' }
+            }}
+            InputProps={{ style: { marginTop: '15px' } }}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="end_date"
+            name="end_date"
+            label="End Date"
+            type="date"
+            fullWidth
+            variant="standard"
+            InputLabelProps={{
+              shrink: true,
+              style: { marginTop: '5px' }
+            }}
+            InputProps={{ style: { marginTop: '15px' } }}
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="project_lead"
+            name="project_lead"
+            label="Project Lead ID"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="technologies"
+            name="technologies"
+            label="Technologies Used"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={technologies.join(', ')}
+            onChange={handleTechChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseProject} >Cancel</Button>
+          <Button onClick={handleCloseProject} type="submit">Save</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
 
 const FilterMenu = () => {
   const names = [
-    ['Languages', 'test', 'testt'],
-    ['Libraries', 'test2'],
-    ['Tools', 'test3'],
-    ['Start Date', 'test4'],
-    ['End Date', 'test5']
+    ['Languages'],
+    ['Libraries'],
+    ['Tools'],
+    ['Start Date'],
+    ['End Date']
   ];
 
   const [state, setState] = React.useState({
-    gilad: false,
-    jason: false,
-    antoine: false,
+    javascript: false,
+    python: false,
+    java: false,
   });
 
   const handleChange = (event) => {
@@ -41,27 +206,25 @@ const FilterMenu = () => {
     });
   };
 
-  const { gilad, jason, antoine } = state;
-
-
+  const { javascript, python, java } = state;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleMenuItemClick = (event, index, type = "null") => {
-    setSelectedIndex(index);
-    setOpen(false);
-  };
+  // const handleMenuItemClick = (event, index, type = "null") => {
+  //   setSelectedIndex(index);
+  //   setOpen(false);
+  // };
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClick = (event, index) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedIndex(index);
-  };
+  // const handleClick = (event, index) => {
+  //   setAnchorEl(event.currentTarget);
+  //   setSelectedIndex(index);
+  // };
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -135,9 +298,8 @@ const FilterMenu = () => {
             <Paper sx={{ maxHeight: 250, overflow: "auto", padding: 5 }}>
               <ClickAwayListener onClickAway={handleClose}>
                 <div>
-                  {names.map((option, index) => (
+                  {names.map((option) => (
                     <div>
-
                       <Accordion>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}
@@ -155,31 +317,28 @@ const FilterMenu = () => {
                         <Divider />
                         <AccordionDetails>
                           <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-
                             <FormGroup>
-
                               <FormControlLabel
                                 control={
-                                  <Checkbox checked={gilad} onChange={handleChange} name="gilad" />
+                                  <Checkbox checked={javascript} onChange={handleChange} name="javascript" />
                                 }
-                                label={option[1]}
+                                label="javascript"
                               />
                               <FormControlLabel
                                 control={
-                                  <Checkbox checked={jason} onChange={handleChange} name="jason" />
+                                  <Checkbox checked={python} onChange={handleChange} name="python" />
                                 }
-                                label="Jason Killian"
+                                label="python"
                               />
                               <FormControlLabel
                                 control={
-                                  <Checkbox checked={antoine} onChange={handleChange} name="antoine" />
+                                  <Checkbox checked={java} onChange={handleChange} name="java" />
                                 }
-                                label="Antoine Llorca"
+                                label="java"
                               />
                             </FormGroup>
                           </FormControl>
                         </AccordionDetails>
-
                       </Accordion>
                     </div>
                   ))}
@@ -195,11 +354,17 @@ const FilterMenu = () => {
 
 
 const Projects = () => {
-
   const [data, setData] = React.useState(null);
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredData, setFilteredData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("All Projects");
+  const [likedProject, setLikedProject] = useState([]);
+  const [reloadProjects, setReloadProjects] = React.useState(false)
+
+  const token = localStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userRole = decodedToken.role;
+  const userId = decodedToken.employeeId;
 
   const projectOptions = [
     "All Projects",
@@ -236,10 +401,18 @@ const Projects = () => {
 
   React.useEffect(() => {
     fetch("/projects")
-      .then((res) => res.json().then((data) => setData(data)))
+      .then((res) => res.json().then((data) => {
+        setData(data)
+        setReloadProjects(false)
+      }))
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [reloadProjects]);
 
+  React.useEffect(() => {
+    fetch(`/profile/${userId}`)
+      .then((res) => res.json().then((data) => setLikedProject(data.favouriteProjects)))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, [userId, data?.favouriteProjects]);
 
   return (
     <>
@@ -279,12 +452,15 @@ const Projects = () => {
             <FilterMenu />
           </div>
           <SearchBar searchQuery={searchQuery} setSearchQuery={handleSearchQuery} />
+          <div style={{ marginLeft: 255 }}>
+            {userRole === 'Resource Manager' ? <AddProjectButton setReloadProjects={setReloadProjects} /> : null}
+          </div>
         </Box>
 
         <Grid sx={{ overflow: 'auto', maxHeight: '100vh' }} container spacing={2}  >
           {!data ? "Loading..." : filteredData?.map((project, index) => (
             <Grid key={index} style={{ padding: "25px" }} item xs={12} sm={6} md={4} lg={3}>
-              <ProjectCard cardcontent={project} />
+              <ProjectCard cardcontent={project} setLikedProject={setLikedProject} likedProject={likedProject} />
             </Grid>
           ))}
         </Grid>

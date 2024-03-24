@@ -15,16 +15,7 @@ const pathwaysData = [
     technologies: ['JavaScript', 'GitHub', 'AWS'], // Add employee IDs if you have an Employee model
     certification: 'AZ-900',
     link: "http://www.w3schools.com",
-    completedUsers: [
-      {
-        name: 'Yasmin Asghar',
-        email_address: 'yasminasghar@testing.co.uk',
-      },
-      {
-        name: 'Yasmin Asghar 2',
-        email_address: 'yasminasghar2@testing.co.uk',
-      },
-    ],
+    completedUsers: [ '1445702' , '1445701'],
   },
   {
     name: 'Pathway B',
@@ -33,16 +24,7 @@ const pathwaysData = [
     technologies: ['Python', 'GitHub', 'AWS'], // Add employee IDs if you have an Employee model
     certification: 'AZ-300',
     link: "http://www.w3schools.com",
-    completedUsers: [
-      {
-        name: 'Yasmin Asghar 3',
-        email_address: 'yasminasghar3@testing.co.uk',
-      },
-      {
-        name: 'Yasmin Asghar 4',
-        email_address: 'yasminasghar4@testing.co.uk',
-      },
-    ],
+    completedUsers: [ '1445702' , '1445701'],
   },
   {
     name: 'Pathway C',
@@ -60,16 +42,7 @@ const pathwaysData = [
     technologies: ['JavaScript', 'GitHub', 'AWS'], // Add employee IDs if you have an Employee model
     certification: '',
     link: "http://www.w3schools.com",
-    completedUsers: [
-      {
-        name: 'Yasmin Asghar',
-        email_address: 'yasminasghar@testing.co.uk',
-      },
-      {
-        name: 'Yasmin Asghar 2',
-        email_address: 'yasminasghar@testing.co.uk',
-      },
-    ],
+    completedUsers: ['1445701'],
   },
   {
     name: 'Pathway E',
@@ -78,16 +51,7 @@ const pathwaysData = [
     technologies: ['JavaScript', 'GitHub', 'AWS'], // Add employee IDs if you have an Employee model
     certification: 'AZ-900',
     link: "http://www.w3schools.com",
-    completedUsers: [
-      {
-        name: 'Yasmin Asghar',
-        email_address: 'yasminasghar@testing.co.uk',
-      },
-      {
-        name: 'Yasmin Asghar 2',
-        email_address: 'yasminasghar@testing.co.uk',
-      },
-    ],
+    completedUsers: [ '1445702'],
   },
 ];
 

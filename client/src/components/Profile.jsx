@@ -3,14 +3,7 @@ import { useParams } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import {
-  Typography,
-  Avatar,
-  Box,
-  Button,
-  MenuItem,
-  Alert
-} from "@mui/material";
+import { Typography, Avatar, Box, Button, MenuItem, Alert } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import TextField from '@mui/material/TextField';
@@ -18,6 +11,9 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import Tooltip from '@mui/material/Tooltip';
+import { jwtDecode } from "jwt-decode";
 
 function stringToColor(string) {
   let hash = 0;
@@ -47,27 +43,34 @@ function stringAvatar(name) {
 }
 
 export default function Pathway() {
-
+  const { userId } = useParams();
   const [data, setData] = React.useState(null);
   const [openSkill, setOpenSkill] = React.useState(false);
   const [openProject, setOpenProject] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
-  const { userName } = useParams();
+  const [reloadProjects, setReloadProjects] = React.useState(false)
+  const [reloadSkills, setReloadSkills] = React.useState(false)
+  const [skill, setSkill] = React.useState([]);
+
+  const token = localStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const employeeId = decodedToken.employeeId;
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/profile/${userName}`);
+        const response = await fetch(`/profile/${userId}`);
         const data = await response.json();
         setData(data);
-        console.log(data)
+        setReloadProjects(false)
+        setReloadSkills(false)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  }, [userName, data?.skills, data?.project_experience]);
+  }, [userId, reloadSkills, reloadProjects]);
 
   var skills = []
   if (data?.skills.length > 0) {
@@ -121,14 +124,13 @@ export default function Pathway() {
 
   const handleSubmitSkill = async (event) => {
     const data = new FormData(event.currentTarget);
-    console.log(data)
     const formData = {
       name: data.get('name'),
       level: data.get('level'),
     };
     console.log(JSON.stringify(formData))
     try {
-      const url = `http://localhost:3001/profile/${userName}/skills`;
+      const url = `http://localhost:3001/profile/${userId}/skills`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -136,7 +138,6 @@ export default function Pathway() {
           'Authorization': `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(formData),
-
       });
       console.log(response)
       if (!response.ok) {
@@ -144,8 +145,6 @@ export default function Pathway() {
         throw new Error('Adding skill failed');
       }
       setSuccess(true)
-      console.log('test')
-
     } catch (error) {
       console.error('Adding skill failed:', error.message);
       setSuccess(false);
@@ -153,7 +152,7 @@ export default function Pathway() {
   };
 
 
-  const [skill, setSkill] = React.useState([]);
+
 
   const handleChange = (event) => {
     const input = event.target.value;
@@ -163,17 +162,15 @@ export default function Pathway() {
 
   const handleSubmitProject = async (event) => {
     const data = new FormData(event.currentTarget);
-    console.log(data)
     const formData = {
       name: data.get('name'),
       date: data.get('date').toString(),
       role: data.get('role'),
       skills: skill,
-
     };
     console.log(JSON.stringify(formData))
     try {
-      const url = `http://localhost:3001/profile/${userName}/experience`;
+      const url = `http://localhost:3001/profile/${userId}/experience`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -186,7 +183,6 @@ export default function Pathway() {
       if (!response.ok) {
         throw new Error('Adding project experience failed');
       }
-      console.log('test')
     } catch (error) {
       console.error('Adding project experience failed:', error.message);
     }
@@ -195,17 +191,16 @@ export default function Pathway() {
   return (
     <>
       {!data ? "Loading..." :
-        <h1 style={{ fontWeight: 400, fontSize: 30, marginTop: 50 }}>My Profile</h1>
+        <h1 style={{ fontWeight: 400, fontSize: 30, marginTop: 50 }}>{data?.name}'s Profile</h1>
       }
-
       <Grid container spacing={600}>
-        <Grid item xs={4}>
+        <Grid zIndex={2} item xs={4}>
           <Card sx={{ height: 175, width: 500, marginLeft: 100, marginTop: 20, backgroundColor: '#F7F5F5' }}>
             <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Contact Details' />
             <CardContent>
               <Box display="flex" >
                 <Box marginRight={2}>
-                  <Avatar alt={userName} style={{ width: 60, height: 55, marginLeft: 25, marginTop: 10 }} {...stringAvatar(userName)} />
+                  {data?.name && <Avatar alt={data?.name} style={{ width: 60, height: 55, marginLeft: 25, marginTop: 10 }} {...stringAvatar(data?.name)} />}
                 </Box>
                 <Box>
                   <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
@@ -223,7 +218,7 @@ export default function Pathway() {
           </Card>
         </Grid>
 
-        <Grid item xs={8}>
+        <Grid zIndex={1} item xs={8}>
           <Card sx={{ height: 175, width: 700, marginRight: 80, marginTop: 20, backgroundColor: '#F7F5F5' }}>
             <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Organisation Details' />
             <CardContent>
@@ -241,7 +236,7 @@ export default function Pathway() {
                 </Box>
                 <Box marginLeft={50}>
                   <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} sx={{ textAlign: 'left' }} paddingLeft={10}>
-                    Cost Centre: {data?.cost_centre}
+                    Employee ID: {data?.employee_id}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" paddingBottom={10} fontSize={15} textAlign={'left'} paddingLeft={10}>
                     Role: {data?.role}
@@ -273,7 +268,13 @@ export default function Pathway() {
                   width={500}
                   height={300}
                 />
-                <Button onClick={handleClickOpenSkill} variant="outlined" style={{ marginLeft: -30, marginTop: -30, fontSize: 13, maxHeight: 35, minWidth: 100, color: 'black', borderColor: 'rgb(45,93,154)' }}> Add skill </Button>
+                {employeeId === userId &&
+                  <Tooltip title="Add skill" arrow>
+                    <Button className="addskillbutton" onClick={handleClickOpenSkill} style={{
+                      marginLeft: -30, marginTop: -30, fontSize: 15, maxHeight: 35, minWidth: 50,
+                    }}><AddBoxIcon sx={{ color: '#2D5592', marginRight: 5, fontSize: 35 }} /></Button>
+                  </Tooltip>
+                }
                 <Dialog
                   open={openSkill}
                   onClose={handleCloseSkill}
@@ -282,6 +283,7 @@ export default function Pathway() {
                     onSubmit: async (event) => {
                       event.preventDefault();
                       await handleSubmitSkill(event);
+                      setReloadSkills(true)
                     },
                   }}
                 >
@@ -316,8 +318,8 @@ export default function Pathway() {
                     </TextField>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleCloseSkill}>Cancel</Button>
-                    <Button type="submit">Save</Button>
+                    <Button onClick={handleCloseSkill} > Cancel</Button>
+                    <Button onClick={handleCloseSkill} type="submit">Save</Button>
                     {success && <Alert severity="success">This is a success Alert.</Alert>} {/* NOT WORKING */}
                   </DialogActions>
                 </Dialog>
@@ -329,18 +331,25 @@ export default function Pathway() {
         <Grid item xs={8}>
           <Card sx={{ height: 400, width: 600, margin: 55, marginTop: 60, backgroundColor: '#F7F5F5', overflow: 'auto' }}>
             <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Project Experience' />
-            <Box display="flex" marginLeft={450} marginTop={-20} marginBottom={5} >
-              <Button onClick={handleClickOpenProject} variant="outlined" style={{ marginRight: -5, fontSize: 13, maxHeight: 35, minWidth: 100, color: 'black', borderColor: 'rgb(45,93,154)' }}> Add project </Button>
+            <Box display="flex" marginLeft={530} marginTop={-17} marginBottom={5} >
+              {employeeId === userId &&
+                <Tooltip title="Add project" arrow>
+                  <Button className="addskillbutton" onClick={handleClickOpenProject} style={{
+                    marginLeft: -5, fontSize: 15, maxHeight: 35, minWidth: 50,
+
+                  }}><AddBoxIcon sx={{ color: '#2D5592', marginRight: 5, fontSize: 35 }} /></Button>
+                </Tooltip>
+              }
             </Box>
             <Dialog
               open={openProject}
               onClose={handleCloseProject}
-
               PaperProps={{
                 component: 'form',
                 onSubmit: async (event) => {
                   event.preventDefault();
                   await handleSubmitProject(event);
+                  setReloadProjects(true)
                 },
               }}
             >
@@ -400,7 +409,7 @@ export default function Pathway() {
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleCloseProject}>Cancel</Button>
-                <Button type="submit">Save</Button>
+                <Button onClick={handleCloseProject} type="submit">Save</Button>
               </DialogActions>
             </Dialog>
             {data?.project_experience.map((option) => (
@@ -417,7 +426,7 @@ export default function Pathway() {
             ))}
           </Card>
         </Grid>
-      </Grid>
+      </Grid >
     </>
   )
 }

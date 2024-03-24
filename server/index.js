@@ -1,14 +1,13 @@
-// Import necessary modules
 const express = require('express');
-const mongoose = require('mongoose');
 const projectRoute = require('../routes/projectRoute');
 const pathwayRoute = require('../routes/pathwayRoute');
-const employeeRoute = require('../routes/auth')
-const userRoute = require('../routes/user')
+const userRoute  = require('../routes/auth')
+const employeeRoute = require('../routes/user')
+const suggestionRoute =  require('../routes/suggestions')
 const { connectToMongo, client } = require('../db/database');
 const cors = require('cors');
 
-// Create an Express application
+// Express application
 const app = express();
 app.use(cors())
 app.use(express.json());
@@ -20,17 +19,14 @@ app.options('*', (req, res) => {
   res.status(200).send();
 });
 
-
 // Connect to MongoDB
 connectToMongo();
 
-// Your application logic goes here
-// Define routes, middleware, etc.
-
 app.use('/projects', projectRoute);
 app.use('/pathways', pathwayRoute);
-app.use('/login', employeeRoute);
-app.use('/profile', userRoute);
+app.use('/login', userRoute);
+app.use('/profile', employeeRoute );
+app.use('/suggestions', suggestionRoute)
 
 // Start the server
 const PORT = process.env.PORT || 3001;

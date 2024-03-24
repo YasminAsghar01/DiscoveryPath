@@ -1,4 +1,3 @@
-// seedData.js
 const mongoose = require('mongoose');
 const { Employee } = require('../models/employee');
 const bcrypt = require('bcrypt');
@@ -9,6 +8,7 @@ mongoose.connect('mongodb://localhost:27017/discoverypath', { useNewUrlParser: t
 // Sample project data
 const EmployeesData = [
   {
+    employee_id: '1445701',
     name: 'Yasmin Asghar',
     role: 'Software Engineer Apprentice',
     email: 'yasminasghar@testing.co.uk',
@@ -16,7 +16,6 @@ const EmployeesData = [
     work_number: '074442019345',
     grade: 'E',
     cost_centre: '25E675',
-    lead: 'John Applegreen',
     team: 'Software Engineering',
     home_office: 'Canary Wharf',
     manager: 'Susan Gett',
@@ -28,16 +27,18 @@ const EmployeesData = [
       {name: 'Project X', role: 'QA Tester', skills_gained: ['Python','AWS'], end_date: '2022-10-02'},
       {name: 'Project Y', role: 'Business Analyst', skills_gained: ['Python'], end_date: '2023-10-05'},
     ],
+    favouriteProjects: ['Project A', 'Project D'],
+    favouritePathways: [],
   },
   {
+    employee_id: '1445702',
     name: 'Jane Asghar',
-    role: 'Software Engineer',
+    role: 'Resource Manager',
     email: 'janeasghar@testing.co.uk',
     password:'test123',
     work_number: '074442019345',
     grade: 'B',
     cost_centre: '25E675',
-    lead: 'John1 Applegreen',
     team: 'Cloud Engineering',
     home_office: 'Canary Wharf',
     manager: 'Susan1 Gett',
@@ -50,12 +51,13 @@ const EmployeesData = [
       {name: 'Project 1', role: 'Cyber Security Engineer', skills_gained: ['Python'], end_date: '2022-12-02'},
       {name: 'Project 2', role: 'Software Engineer Apprentice', skills_gained: ['Python', 'GCP'], end_date: '2022-05-09'},
     ],
+    favouriteProjects: [],
+    favouritePathways: ['Pathway A'],
   },
 ];
 
-const saltRounds = 10; // Number of salt rounds for bcrypt
+const saltRounds = 10;
 
-  // Function to seed projects
 async function seedProjects() {
   try {
     // Remove existing projects
@@ -76,10 +78,7 @@ async function seedProjects() {
   } catch (error) {
     console.error('Error seeding projects:', error);
   } finally {
-    // Close the MongoDB connection
     mongoose.connection.close();
   }
 }
-
-// Call the seedProjects function
 seedProjects();

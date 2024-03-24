@@ -7,7 +7,7 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "build": "cd client && npm install && npm run build",
-    "init-db": "node scripts/projectData.js && node scripts/pathwayData.js && node scripts/userData.js"
+    "init-db": "node scripts/projectData.js && node scripts/pathwayData.js && node scripts/employeeData.js"
   },
   "keywords": [],
   "author": "",

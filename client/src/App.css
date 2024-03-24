@@ -33,6 +33,10 @@
   background-color: rgb(79, 115, 162)  !important;
 }
 
+.addskillbutton:hover {
+  background-color: #F7F5F5  !important;
+}
+
 .project-button:hover {
   background-color: rgb(79, 115, 162) !important;
   z-index: 1;

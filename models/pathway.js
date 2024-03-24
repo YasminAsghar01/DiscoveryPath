@@ -7,12 +7,7 @@ const pathwaySchema = new mongoose.Schema({
   technologies: { type: [String], default: [] }, // Array of technologies, initially empty
   certification: { type: String, required: false},
   link : { type: String, required: true},
-  completedUsers: [
-    {
-      name: { type: String, required: true },
-      email_address: {type: String, required: true },
-    },
-  ],
+  completedUsers: [{type: String}],
 });
 
 const Pathway = mongoose.model('Pathway', pathwaySchema);

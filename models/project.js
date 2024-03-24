@@ -10,21 +10,11 @@ const projectSchema = new mongoose.Schema({
   openRoles: [
     {
       job_role: { type: String, required: true },
-      skill_requirement: { type: [String], default: []  },
+      skill_requirement: { type: [String], default: []},
     },
   ],
-  teamMembers: [
-    {
-      name: { type: String, required: true },
-      role: { type: String, required: true },
-      email_address: {type: String, required: true },
-      work_number:{type: String, required: true },
-      grade: {type: String, required: true },
-      home_office: {type: String, required: true },
-      manager: {type: String, required: true },
-      technologies: { type: [String], default: [] },
-    },
-  ],
+  teamMembers : [{type: String}],
+  recommended_pathway: [{type: String}],
 });
 
 const Project = mongoose.model('Project', projectSchema);

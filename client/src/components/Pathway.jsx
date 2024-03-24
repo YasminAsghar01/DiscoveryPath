@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Divider } from "@mui/material";
+import { useParams, useNavigate } from 'react-router-dom';
+import { Divider, IconButton } from "@mui/material";
 import SideNav from './sideNav';
-import { Element } from 'react-scroll';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -12,7 +11,6 @@ function stringToColor(string) {
   let hash = 0;
   let i;
 
-  /* eslint-disable no-bitwise */
   for (i = 0; i < string.length; i += 1) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
@@ -23,8 +21,6 @@ function stringToColor(string) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-  /* eslint-enable no-bitwise */
-
   return color;
 }
 
@@ -37,12 +33,11 @@ function stringAvatar(name) {
   };
 }
 
-
 export default function Pathway() {
-
-  const [data, setData] = React.useState(null);
-  // Access the dynamic route parameter
   const { pathwayName } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = React.useState(null);
+  const [teamMemberNames, setTeamMemberNames] = React.useState([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -54,9 +49,41 @@ export default function Pathway() {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, [pathwayName]);
+
+  React.useEffect(() => {
+    const fetchEmployeeData = async (userId) => {
+      try {
+        const response = await fetch(`/profile/${userId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee data');
+        }
+        const employeeData = await response.json();
+        return employeeData.name;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+    const fetchTeamMemberNames = async () => {
+      if (data?.completedUsers) {
+        const names = await Promise.all(
+          data?.completedUsers.map(async (memberId) => {
+            const name = await fetchEmployeeData(memberId);
+            return { name, memberId };
+          })
+        );
+        setTeamMemberNames(names);
+      }
+    }; fetchTeamMemberNames()
+
+  }, [data?.completedUsers]);
+
+  const handleAvatarClick = (name, memberId) => { // Event handler for the "Make Reservation" button.
+    window.scrollTo(0, 0); // Scroll to the top of the page.
+    navigate(`/profile/${memberId}`)
+  }
 
   const headings = [
     { id: '1', text: 'Pathway Description' },
@@ -65,7 +92,6 @@ export default function Pathway() {
     { id: '4', text: 'Certification' },
     { id: '5', text: 'Completed by' },
   ];
-  console.log(data)
 
   return (
     <>
@@ -78,14 +104,19 @@ export default function Pathway() {
             <div key={heading.id} id={heading.id}>
               <h2>{heading.text}</h2>
               <>
-                {heading.text === 'Pathway Description' && data?.description ? <span>{data?.description}<br/>{`\tThis will take ${data?.duration} to complete`}</span>
+                {heading.text === 'Pathway Description' && data?.description ? <span>{data?.description}<br />{`\tThis will take ${data?.duration} to complete`}</span>
                   : null}
               </>
               <>
-                {heading.text === 'Link to Pathway' && data?.link ? <a target="_blank" rel="noreferrer" href={data?.link}>{data?.link}</a>
+                {heading.text === 'Link to Pathway' && data?.link ? <a style={{
+                  textDecoration: 'none', color: 'black',
+                  fontWeight: 400,
+                  transition: 'font-weight 0.3s',
+                }}
+                  onMouseOver={(e) => (e.target.style.color = 'rgb(45,93,154)')}
+                  onMouseOut={(e) => (e.target.style.color = 'black')} target="_blank" rel="noreferrer" href={data?.link}>{data?.link}</a>
                   : null}
               </>
-
               <>
                 {heading.text === 'Skills Gained' && data?.technologies
                   ? data?.technologies.map((test, index) => (
@@ -104,15 +135,18 @@ export default function Pathway() {
                   : null}
               </>
               <Stack direction="row" spacing={20}>
-                {heading.text === 'Completed by' && data?.completedUsers
-                  ? data?.completedUsers.map((test, index) => (
+                {heading.text === 'Completed by' && teamMemberNames
+                  ? teamMemberNames?.map(({ name, memberId }, index) => (
                     <Stack key={index} direction="column" alignItems="center">
-                      <Avatar
-                        alt={test.name}
-                        style={{ width: 60, height: 54, marginBottom: 1 }}
-                        {...stringAvatar(test.name)}
-                      />
-                      <Typography variant="caption">{test.name}</Typography>
+                      <IconButton
+                        onClick={() => handleAvatarClick(name, memberId)}>
+                        <Avatar
+                          alt={name}
+                          style={{ width: 60, height: 54, marginBottom: 1 }}
+                          {...stringAvatar(name)}
+                        />
+                      </IconButton>
+                      <Typography variant="caption">{name}</Typography>
                     </Stack>
                   ))
                   : null}
@@ -124,7 +158,6 @@ export default function Pathway() {
               <div style={{ margin: '50px 0' }} />
               <Divider sx={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }} />
             </div>
-
           ))}
         </div>
         <SideNav headings={headings} />

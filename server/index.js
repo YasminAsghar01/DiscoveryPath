@@ -25,7 +25,7 @@ connectToMongo();
 app.use('/projects', projectRoute);
 app.use('/pathways', pathwayRoute);
 app.use('/login', userRoute);
-app.use('/profile', employeeRoute );
+app.use('/profiles', employeeRoute );
 app.use('/suggestions', suggestionRoute)
 
 // Start the server

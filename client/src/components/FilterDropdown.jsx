@@ -22,7 +22,6 @@ const FilterDropdown = ({ options, onFilterChange }) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
 
@@ -41,6 +40,8 @@ const FilterDropdown = ({ options, onFilterChange }) => {
               borderColor: "rgba(0, 0, 0, 0.4)",
               cursor: 'default',
             },
+            height: 40, // Set maximum width for the button
+            width: 190
           }}
         >
           {options[selectedIndex]}
@@ -69,7 +70,9 @@ const FilterDropdown = ({ options, onFilterChange }) => {
       <Popper
         sx={{
           zIndex: 1,
-          height: 200
+          height: 200,
+          maxHeight: 200, // Set maximum height for the menu
+          overflowY: 'auto', // Make the menu scrollable
         }}
         open={open}
         anchorEl={anchorRef.current}

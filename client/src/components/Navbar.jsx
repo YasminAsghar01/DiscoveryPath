@@ -141,7 +141,7 @@ const Navbar = ({ onLogout }) => {
               My Details:
             </Typography>
 
-            <Link href={`/profile/${userId}`} sx={{ textDecoration: "none", color: "black" }} >
+            <Link href={`/profiles/${userId}`} sx={{ textDecoration: "none", color: "black" }} >
               <Typography
                 sx={{
                   fontSize: 15,
@@ -150,7 +150,7 @@ const Navbar = ({ onLogout }) => {
                   marginRight: 50,
                   padding: 5,
                 }}
-                style={{ fontWeight: window.location.pathname === `/profile/${encodeURIComponent(userId)}` ? 'bold' : 'null' }}
+                style={{ fontWeight: window.location.pathname === `/profiles/${encodeURIComponent(userId)}` ? 'bold' : 'null' }}
               >
                 Profile
               </Typography>

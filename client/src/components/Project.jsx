@@ -10,8 +10,12 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import { jwtDecode } from "jwt-decode";
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Tooltip from '@mui/material/Tooltip';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Box, TextField, MenuItem, Autocomplete } from '@mui/material'
 
 function stringToColor(string) {
   let hash = 0;
@@ -46,8 +50,11 @@ export default function Project() {
   const { projectName } = useParams();
   const navigate = useNavigate();
   const [data, setData] = React.useState(null);
+  const [employees, setEmployees] = React.useState(null);
   const [projectLeadName, setProjectLeadName] = React.useState(null);
   const [teamMemberNames, setTeamMemberNames] = React.useState([]);
+  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
+  const [reloadTeamMembers, setReloadTeamMembers] = React.useState(false)
 
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -59,18 +66,35 @@ export default function Project() {
         const response = await fetch(`/projects/${projectName}`);
         const data = await response.json();
         setData(data);
+        setReloadTeamMembers(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  }, [projectName]);
+  }, [projectName, reloadTeamMembers]);
+
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/profiles`);
+        const data = await response.json();
+        setEmployees(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
       try {
-        const response = await fetch(`/profile/${userId}`);
+        const response = await fetch(`/profiles/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch employee data');
         }
@@ -111,7 +135,7 @@ export default function Project() {
 
   const handleAvatarClick = (memberId) => { // Event handler for the "Make Reservation" button.
     window.scrollTo(0, 0); // Scroll to the top of the page.
-    navigate(`/profile/${memberId}`)
+    navigate(`/profiles/${memberId}`)
   }
 
   const handlePathwayClick = (name) => { // Event handler for the "Make Reservation" button.
@@ -119,8 +143,43 @@ export default function Project() {
     navigate(`/pathways/${name}`)
   }
 
-  const editTeamMembers = () => {
-    console.log('hello')
+  const [openTeamMember, setOpenTeamMember] = React.useState(false);
+
+  const handleClickTeamMember = () => {
+    setOpenTeamMember(true);
+  };
+
+  const handleCloseTeamMember = () => {
+    setOpenTeamMember(false);
+  };
+
+  const handleSubmitEmployee = async (event) => {
+    if (selectedEmployee) {
+      if (data?.teamMembers.includes(selectedEmployee?.employee_id) || (data?.project_lead.includes(selectedEmployee?.employee_id)))  {
+          console.log('Already added')
+          handleCloseTeamMember();
+          return
+      }
+      try {
+        const url = `http://localhost:3001/projects/${projectName}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+          },
+          body: JSON.stringify({ employee_id: selectedEmployee.employee_id }),
+        });
+        console.log(response)
+        if (!response.ok) {
+          throw new Error('Adding team member failed');
+        }
+        setReloadTeamMembers(true)
+      } catch (error) {
+        console.error('Adding team member failed:', error.message);
+      }
+    }
+    handleCloseTeamMember(); // Close the dialog after saving
   }
 
   return (
@@ -128,9 +187,6 @@ export default function Project() {
       {!data ? "Loading..." :
         <h1 style={{ fontWeight: 400, fontSize: 30, marginTop: 50 }}>{data.name}</h1>
       }
-
-
-
 
       <div style={{ display: 'flex', textAlign: 'left', paddingLeft: '10%' }}>
         <div style={{ flex: 1, padding: '20px' }}>
@@ -172,21 +228,22 @@ export default function Project() {
                       </IconButton>
                       <Typography variant="caption">{name}</Typography>
                     </Stack>
+
                   ))
                   : null}
+
+                {heading.text === 'Team Members' && userId === data?.project_lead &&
+                  <Stack className="addMemberbutton" sx={{ '&hover': { backgroundColor: 'white' } }}>
+                    <Button className="addMemberbutton"
+                      sx={{
+                        marginTop: 15,
+                      }}
+                      onClick={handleClickTeamMember}>
+                      <AddOutlinedIcon sx={{ color: '#2D5592', fontSize: 30, backgroundColor: 'white' }} />
+                    </Button>
+                  </Stack>
+                }
               </Stack>
-
-              <>
-                {heading.text === 'Team Members' ? <div style={{ marginLeft: 950 }}>
-                  {userId === data?.project_lead && <Tooltip title="Edit" arrow>
-                    <Button className="addskillbutton" style={{
-                      marginLeft: -30, marginTop: -270, fontSize: 12, maxHeight: 35, minWidth: 50
-                    }} onClick={editTeamMembers}><EditOutlinedIcon sx={{ color: '#2D5592', marginRight: 5, fontSize: 30 }} /></Button>
-                  </Tooltip>}
-                </div>
-                  : null}
-              </>
-
               <>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
                   {heading.text === 'Availability' && data?.openRoles && data.openRoles.length > 0
@@ -280,6 +337,36 @@ export default function Project() {
         </div>
         <SideNav headings={headings} />
       </div>
+      <Dialog
+        open={openTeamMember}
+        onClose={handleCloseTeamMember}
+      >
+        <DialogTitle textAlign={'center'}>Add a new team member</DialogTitle>
+        <DialogContent>
+          <Autocomplete
+            sx={{ width: 300 }}
+            options={employees}
+            getOptionLabel={(option) => option.name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderOption={(props, option) => (
+              <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                {option.name}
+                <br />
+                {option.employee_id}
+              </Box>
+            )}
+            onChange={(event, value) => setSelectedEmployee(value)}
+            defaultValue={employees?.[0]}
+            renderInput={(params) => (
+              <TextField {...params} />
+            )}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTeamMember} >Cancel</Button>
+          <Button onClick={handleSubmitEmployee} >Add</Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }

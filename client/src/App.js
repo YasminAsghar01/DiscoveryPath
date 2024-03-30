@@ -43,7 +43,7 @@ function App() {
             <Route path="/pathways" element={loggedIn ? <PathwayPage /> : <Navigate to="/login" />} />
             <Route path="/projects/:projectName" element={loggedIn ? <Project /> : <Navigate to="/login" />} />
             <Route path="/pathways/:pathwayName" element={loggedIn ? <Pathway /> : <Navigate to="/login" />} />
-            <Route path="/profile/:userId" element={loggedIn ? <Profile /> : <Navigate to="/login" />} />
+            <Route path="/profiles/:userId" element={loggedIn ? <Profile /> : <Navigate to="/login" />} />
             <Route path="/achievements" element={<h1>Learning and Achievements page</h1>} />
             <Route path="/favourites" element={<h1>Favourites page</h1>} />
             <Route path="/messages" element={<h1>Messages page</h1>} />

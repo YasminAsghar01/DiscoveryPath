@@ -15,7 +15,7 @@ const projectsData = [
     start_date: new Date(),
     end_date: new Date(),
     project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    technologies: ['JavaScript', 'GitHub', 'Docker'],
     openRoles: [
       {
         job_role: 'Software Engineer Apprentice',
@@ -23,22 +23,22 @@ const projectsData = [
       },
       {
         job_role: 'Senior Engineer',
-        skill_requirement: ['Leadership', 'Docker'],
+        skill_requirement: ['Leadership', 'Docker', 'Agile'],
       },
     ],
     teamMembers: ['1445701'],
-    recommended_pathway: ['Pathway A', 'Pathway B'],
+    recommended_pathway: ['Pathway A', 'Pathway B', 'Pathway C'],
   },
   {
     name: 'Project B',
     description: 'Description for Project B',
     start_date: new Date(),
     end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['Python', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    project_lead: '1445701',
+    technologies: ['Python', 'GitHub', 'Docker'],
     openRoles: [],
-    teamMembers: ['1445702' , '1445701'],
-    recommended_pathway: ['Pathway A'],
+    teamMembers: ['1445703' , '1445704'],
+    recommended_pathway: ['Pathway B', 'Pathway F'],
   },
   {
     name: 'Project C',
@@ -46,99 +46,75 @@ const projectsData = [
     start_date: new Date(),
     end_date: new Date(),
     project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    technologies: ['Figma', 'GitHub', 'AWS'],
     openRoles: [
       {
-        job_role: 'Senior Manager',
-        skill_requirement: ['JavaScript', 'Python'],
+        job_role: 'Software Engineer',
+        skill_requirement: ['JavaScript', 'AWS', 'React'],
       },
       {
-        job_role: 'Senior Engineer',
-        skill_requirement: ['Azure', 'GCP'],
+        job_role: 'UI/UX Designer',
+        skill_requirement: ['Figma', 'AWS'],
       },
     ],
-    teamMembers: ['1445701'],
-    recommended_pathway: ['Pathway E'],
+    teamMembers: ['1445704'],
+    recommended_pathway: ['Pathway D'],
   },
   {
     name: 'Project D',
-    description: 'Description for Project C',
+    description: 'Description for Project D',
     start_date: new Date(),
     end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    project_lead: '1445704',
+    technologies: ['Python', 'Cypress', 'Jest'], // Add employee IDs if you have an Employee model
     openRoles: [
       {
-        job_role: 'Senior Manager',
-        skill_requirement: ['JavaScript', 'Python'],
+        job_role: 'QA Engineer',
+        skill_requirement: ['Cypress', 'Jest'],
       },
       {
-        job_role: 'Senior Engineer',
-        skill_requirement: ['Azure', 'GCP'],
+        job_role: 'FrontEnd Tester',
+        skill_requirement: ['Python', 'Cypress'],
       },
     ],
-    teamMembers: ['1445702'],
+    teamMembers: ['1445702', '1445701'],
     recommended_pathway: [],
   },
   {
     name: 'Project E',
-    description: 'Description for Project C',
+    description: 'Description for Project E',
     start_date: new Date(),
     end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    project_lead: '1445701',
+    technologies: ['JavaScript', 'GitHub', 'Docker'],
     openRoles: [
       {
         job_role: 'Senior Manager',
         skill_requirement: ['JavaScript', 'Python'],
       },
       {
-        job_role: 'Senior Engineer',
+        job_role: 'Software Engineer',
         skill_requirement: ['Azure', 'GCP'],
       },
     ],
-    teamMembers: ['1445702'],
-    recommended_pathway: ['Pathway E'],
+    teamMembers: ['1445703', '1445705', '1445704'],
+    recommended_pathway: ['Pathway A', 'Pathway C'],
   },
   {
     name: 'Project F',
-    description: 'Description for Project C',
+    description: 'Description for Project F',
     start_date: new Date(),
     end_date: new Date(),
     project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
+    technologies: ['Python', 'GitHub', 'CloverDX'],
     openRoles: [
       {
-        job_role: 'Senior Manager',
-        skill_requirement: ['JavaScript', 'Python'],
-      },
-      {
-        job_role: 'Senior Engineer',
-        skill_requirement: ['Azure', 'GCP'],
+        job_role: 'Data Analyst',
+        skill_requirement: ['CloverDX', 'PowerBI'],
       },
     ],
-    teamMembers: ['1445702'],
-    recommended_pathway: ['Pathway C'],
-  },
-  {
-    name: 'Project G',
-    description: 'Description for Project C',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'], // Add employee IDs if you have an Employee model
-    openRoles: [
-      {
-        job_role: 'Senior Manager',
-        skill_requirement: ['JavaScript', 'Python'],
-      },
-      {
-        job_role: 'Senior Engineer',
-        skill_requirement: ['Azure', 'GCP'],
-      },
-    ],
-    teamMembers: ['1445702'],
-    recommended_pathway: ['Pathway C', 'Pathway D'],
+    teamMembers: [],
+    recommended_pathway: ['Pathway F', 'Pathway I'],
   },
 ];
 

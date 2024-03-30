@@ -55,7 +55,7 @@ export default function Pathway() {
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
       try {
-        const response = await fetch(`/profile/${userId}`);
+        const response = await fetch(`/profiles/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch employee data');
         }
@@ -82,7 +82,7 @@ export default function Pathway() {
 
   const handleAvatarClick = (name, memberId) => { // Event handler for the "Make Reservation" button.
     window.scrollTo(0, 0); // Scroll to the top of the page.
-    navigate(`/profile/${memberId}`)
+    navigate(`/profiles/${memberId}`)
   }
 
   const headings = [

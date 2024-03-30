@@ -27,6 +27,7 @@ import Tooltip from '@mui/material/Tooltip';
 const AddProjectButton = ({ setReloadProjects }) => {
   const [openProject, setOpenProject] = React.useState(false);
   const [technologies, setTechnologies] = React.useState([]);
+  const [team_members, setTeamMembers] = React.useState([]);
 
   const handleClickOpenProject = () => {
     setOpenProject(true);
@@ -42,6 +43,12 @@ const AddProjectButton = ({ setReloadProjects }) => {
     setTechnologies(techArray);
   };
 
+  const handleTeamMemberChange = (event) => {
+    const input = event.target.value;
+    const teamMemberArray = input.split(',').map((s) => s.trim());
+    setTeamMembers(teamMemberArray);
+  }
+
   const handleSubmitProject = async (event) => {
     const data = new FormData(event.currentTarget);
     const formData = {
@@ -51,6 +58,7 @@ const AddProjectButton = ({ setReloadProjects }) => {
       end_date: data.get('end_date').toString(),
       project_lead: data.get('project_lead'),
       technologies: technologies,
+      team_members: team_members
     };
     console.log(JSON.stringify(formData))
     try {
@@ -173,6 +181,18 @@ const AddProjectButton = ({ setReloadProjects }) => {
             variant="standard"
             value={technologies.join(', ')}
             onChange={handleTechChange}
+          />
+           <TextField
+            autoFocus
+            margin="dense"
+            id="team_members"
+            name="team_members"
+            label="Team Members ID"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={team_members.join(', ')}
+            onChange={handleTeamMemberChange}
           />
         </DialogContent>
         <DialogActions>
@@ -369,6 +389,7 @@ const Projects = () => {
   const projectOptions = [
     "All Projects",
     "Available Projects",
+    "Favourite Projects",
   ];
 
   React.useEffect(() => {
@@ -377,10 +398,13 @@ const Projects = () => {
       if (selectedFilter === "Available Projects") {
         return match && item.openRoles.length > 0;
       }
+      else if (selectedFilter === "Favourite Projects") {
+        return match && likedProject.includes(item.name);
+      }
       return match;
     });
     setFilteredData(filtered);
-  }, [searchQuery, data, selectedFilter]);
+  }, [searchQuery, data, selectedFilter, likedProject]);
 
   const handleSearchQuery = (query) => {
     setSearchQuery(query);
@@ -391,7 +415,14 @@ const Projects = () => {
 
     if (selectedOption === "All Projects") {
       setFilteredData(data);
-    } else {
+    }
+    else if (selectedFilter === "Favourite Projects") {
+      const filtered = data?.filter((item) =>
+        likedProject.includes(item.name)
+      );
+      setFilteredData(filtered);
+    }
+    else {
       const filtered = data?.filter((item) =>
         item.openRoles.length > 0
       );
@@ -409,7 +440,7 @@ const Projects = () => {
   }, [reloadProjects]);
 
   React.useEffect(() => {
-    fetch(`/profile/${userId}`)
+    fetch(`/profiles/${userId}`)
       .then((res) => res.json().then((data) => setLikedProject(data.favouriteProjects)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [userId, data?.favouriteProjects]);
@@ -452,7 +483,7 @@ const Projects = () => {
             <FilterMenu />
           </div>
           <SearchBar searchQuery={searchQuery} setSearchQuery={handleSearchQuery} />
-          <div style={{ marginLeft: 255 }}>
+          <div style={{ marginLeft: 200 }}>
             {userRole === 'Resource Manager' ? <AddProjectButton setReloadProjects={setReloadProjects} /> : null}
           </div>
         </Box>

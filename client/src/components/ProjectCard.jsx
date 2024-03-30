@@ -31,7 +31,7 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
       const deleteFavourite = async () => {
         const projectName = cardcontent.name
         try {
-          const response = await fetch(`/profile/${userId}/favouriteProject/${projectName}`, {
+          const response = await fetch(`/profiles/${userId}/favouriteProject/${projectName}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -60,7 +60,7 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
         };
         console.log(JSON.stringify(formData))
         try {
-          const url = `http://localhost:3001/profile/${userId}/favouriteProject`;
+          const url = `http://localhost:3001/profiles/${userId}/favouriteProject`;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -85,7 +85,7 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
       try {
-        const response = await fetch(`/profile/${userId}`);
+        const response = await fetch(`/profiles/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch employee data');
         }

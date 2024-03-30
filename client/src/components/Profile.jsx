@@ -59,7 +59,7 @@ export default function Pathway() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/profile/${userId}`);
+        const response = await fetch(`/profiles/${userId}`);
         const data = await response.json();
         setData(data);
         setReloadProjects(false)
@@ -130,7 +130,7 @@ export default function Pathway() {
     };
     console.log(JSON.stringify(formData))
     try {
-      const url = `http://localhost:3001/profile/${userId}/skills`;
+      const url = `http://localhost:3001/profiles/${userId}/skills`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -170,7 +170,7 @@ export default function Pathway() {
     };
     console.log(JSON.stringify(formData))
     try {
-      const url = `http://localhost:3001/profile/${userId}/experience`;
+      const url = `http://localhost:3001/profiles/${userId}/experience`;
       const response = await fetch(url, {
         method: 'POST',
         headers: {

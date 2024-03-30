@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Grid, Container, ClickAwayListener, Grow, ButtonGroup, Popper, Paper, Divider } from "@mui/material";
 import PathwayCard from "./PathwayCard";
 import { ArrowDropDown } from "@mui/icons-material";
-import { Box, TextField} from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useState } from 'react'
 import Accordion from '@mui/material/Accordion';
@@ -24,7 +24,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Tooltip from '@mui/material/Tooltip';
 
-const AddPathwayButton = ({setReloadPathways}) => {
+const AddPathwayButton = ({ setReloadPathways }) => {
   const [openPathway, setOpenPathway] = React.useState(false);
 
   const handleClickOpenPathway = () => {
@@ -356,7 +356,7 @@ const Pathways = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("All Pathways");
   const [likedPathway, setLikedPathway] = useState([]);
-  const [reloadPathways,setReloadPathways]= React.useState(false)
+  const [reloadPathways, setReloadPathways] = React.useState(false)
 
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -366,6 +366,7 @@ const Pathways = () => {
   const projectOptions = [
     "All Pathways",
     "Completed Pathways",
+    "Favourite Pathways",
   ];
 
   React.useEffect(() => {
@@ -374,10 +375,13 @@ const Pathways = () => {
       if (selectedFilter === "Completed Pathways") {
         return match && item.completedUsers.length > 0;
       }
+      else if (selectedFilter === "Favourite Pathways") {
+        return match && likedPathway.includes(item.name);
+      }
       return match;
     });
     setFilteredData(filtered);
-  }, [searchQuery, data, selectedFilter]);
+  }, [searchQuery, data, selectedFilter, likedPathway]);
 
   const handleSearchQuery = (query) => {
     setSearchQuery(query);
@@ -388,7 +392,14 @@ const Pathways = () => {
 
     if (selectedOption === "All Pathways") {
       setFilteredData(data);
-    } else {
+    }
+    else if (selectedFilter === "Favourite Pathways") {
+      const filtered = data?.filter((item) =>
+        likedPathway.includes(item.name)
+      );
+      setFilteredData(filtered);
+    }
+    else {
       const filtered = data?.filter((item) =>
         item.completedUsers.length > 0
       );
@@ -403,7 +414,7 @@ const Pathways = () => {
   }, [reloadPathways]);
 
   React.useEffect(() => {
-    fetch(`/profile/${userId}`)
+    fetch(`/profiles/${userId}`)
       .then((res) => res.json().then((data) => setLikedPathway(data.favouritePathways)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [userId, data?.favouritePathways]);
@@ -447,15 +458,15 @@ const Pathways = () => {
             <FilterMenu />
           </div>
           <SearchBar searchQuery={searchQuery} setSearchQuery={handleSearchQuery} />
-          <div style={{ marginLeft: 255 }}>
-            {userRole === 'Resource Manager' ? <AddPathwayButton setReloadPathways={setReloadPathways}/> : null}
+          <div style={{ marginLeft: 200 }}>
+            {userRole === 'Resource Manager' ? <AddPathwayButton setReloadPathways={setReloadPathways} /> : null}
           </div>
         </Box>
 
         <Grid sx={{ overflow: 'auto', maxHeight: '100vh' }} container spacing={2}  >
           {!data ? "Loading..." : filteredData?.map((project, index) => (
             <Grid key={index} style={{ padding: "25px" }} item xs={12} sm={6} md={4} lg={3}>
-              <PathwayCard cardcontent={project} setLikedPathway={setLikedPathway} likedPathway={likedPathway}/>
+              <PathwayCard cardcontent={project} setLikedPathway={setLikedPathway} likedPathway={likedPathway} />
             </Grid>
           ))}
         </Grid>

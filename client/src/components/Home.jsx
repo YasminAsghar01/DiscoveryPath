@@ -16,13 +16,13 @@ const Home = () => {
   const employeeId = decodedToken.employeeId
 
   React.useEffect(() => {
-    fetch(`/profile/${employeeId}`)
+    fetch(`/profiles/${employeeId}`)
       .then((res) => res.json().then((data) => setLikedProject(data.favouriteProjects)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [employeeId]);
 
   React.useEffect(() => {
-    fetch(`/profile/${employeeId}`)
+    fetch(`/profiles/${employeeId}`)
       .then((res) => res.json().then((data) => setLikedPathway(data.favouritePathways)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [employeeId]);

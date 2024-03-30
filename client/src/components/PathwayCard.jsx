@@ -32,7 +32,7 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
       const deleteFavourite = async () => {
         const pathwayName = cardcontent.name
         try {
-          const response = await fetch(`/profile/${userId}/favouritePathway/${pathwayName}`, {
+          const response = await fetch(`/profiles/${userId}/favouritePathway/${pathwayName}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
         };
         console.log(JSON.stringify(formData))
         try {
-          const url = `http://localhost:3001/profile/${userId}/favouritePathway`;
+          const url = `http://localhost:3001/profiles/${userId}/favouritePathway`;
           const response = await fetch(url, {
             method: 'POST',
             headers: {

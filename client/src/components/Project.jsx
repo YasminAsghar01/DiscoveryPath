@@ -99,7 +99,7 @@ export default function Project() {
           throw new Error('Failed to fetch employee data');
         }
         const employeeData = await response.json();
-        return employeeData.name;
+        return employeeData?.name;
       } catch (error) {
         console.error(error);
         return null;
@@ -155,10 +155,11 @@ export default function Project() {
 
   const handleSubmitEmployee = async (event) => {
     if (selectedEmployee) {
-      if (data?.teamMembers.includes(selectedEmployee?.employee_id) || (data?.project_lead.includes(selectedEmployee?.employee_id)))  {
-          console.log('Already added')
-          handleCloseTeamMember();
-          return
+      if (data?.teamMembers.includes(selectedEmployee?.employee_id) ||
+        (data?.project_lead.includes(selectedEmployee?.employee_id))) {
+        console.log('Already added')
+        handleCloseTeamMember();
+        return
       }
       try {
         const url = `http://localhost:3001/projects/${projectName}`;
@@ -246,7 +247,7 @@ export default function Project() {
               </Stack>
               <>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
-                  {heading.text === 'Availability' && data?.openRoles && data.openRoles.length > 0
+                  {heading.text === 'Availability' && data?.openRoles && data?.openRoles.length > 0
                     ? data?.openRoles.map((test, index) => (
                       <Card key={index} sx={{
                         maxWidth: 200, minWidth: 250, minHeight: 200, display: 'flex',
@@ -293,7 +294,7 @@ export default function Project() {
               </>
               <>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
-                  {heading.text === 'Learning Pathways' && data?.recommended_pathway && data.recommended_pathway.length > 0
+                  {heading.text === 'Learning Pathways' && data?.recommended_pathway && data?.recommended_pathway.length > 0
                     ? data?.recommended_pathway.map((name, index) => (
                       <Card key={name} sx={{
                         maxWidth: 200, minWidth: 250, maxHeight: 150, display: 'flex',

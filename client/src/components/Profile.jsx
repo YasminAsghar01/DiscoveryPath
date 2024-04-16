@@ -334,7 +334,7 @@ export default function Pathway() {
             <Box display="flex" marginLeft={530} marginTop={-17} marginBottom={5} >
               {employeeId === userId &&
                 <Tooltip title="Add project" arrow>
-                  <Button className="addskillbutton" onClick={handleClickOpenProject} style={{
+                  <Button className="addprojectbutton" onClick={handleClickOpenProject} style={{
                     marginLeft: -5, fontSize: 15, maxHeight: 35, minWidth: 50,
 
                   }}><AddBoxIcon sx={{ color: '#2D5592', marginRight: 5, fontSize: 35 }} /></Button>

@@ -41,7 +41,7 @@ router.post('/:projectName', async (req, res) => {
     if (project) {
       const updatedFields = Object.keys(req.body); // If project exists, check if any fields are being updated
       if (updatedFields.length === 0) {
-        return res.status(400).json({ error: 'Pathway already exists and No fields to update' });
+        return res.status(400).json({ error: 'Project already exists and No fields to update' });
       }
       project.teamMembers.push(req.body.employee_id);
       project = await project.save();

@@ -3,8 +3,6 @@ const express = require('express');
 const router = express.Router();
 const Pathway = require('../models/pathway');
 
-// Define your pathway-related routes
-
 router.get('/', async (req, res) => {
   try {
     const pathways = await Pathway.find();
@@ -24,7 +22,7 @@ router.get('/:pathwayName', async (req, res) => {
   try {
     const pathway = await Pathway.findOne({ name: pathwayName });
     if (!pathway) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: 'Pathway not found' });
     }
     res.json(pathway);
     return
@@ -41,7 +39,7 @@ router.post('/:pathwayName', async (req, res) => {
   try {
     const existingPathway = await Pathway.findOne({ name: pathwayName });
     if (existingPathway) {
-      return res.status(404).json({ error: 'Pathway already exists' });
+      return res.status(409).json({ error: 'Pathway already exists' });
     }
     const result = await Pathway.create({ name: pathwayName, description: req.body.description, duration: req.body.duration, certification: req.body.certification, link: req.body.pathway_link, technologies: req.body.skills_gained });
     if (result instanceof Pathway) {

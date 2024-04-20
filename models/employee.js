@@ -16,7 +16,7 @@ const employeeSchema = new mongoose.Schema({
   skills: [
     {
       name: {type: String, required: true },
-      proficiency_level: {type: String, required: true, default:'Beginner'},
+      proficiency_level: {type: String, required: true},
     }
   ],
   project_experience: [

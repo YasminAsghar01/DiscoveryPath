@@ -30,7 +30,8 @@ app.use('/suggestions', suggestionRoute)
 
 // Start the server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
@@ -40,3 +41,5 @@ process.on('SIGINT', async () => {
   console.log('MongoDB connection closed');
   process.exit(0);
 });
+
+module.exports = server;

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import { Typography, Avatar, Box, Button, MenuItem, Alert } from "@mui/material";
+import { Typography, Avatar, Box, Button, MenuItem } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import TextField from '@mui/material/TextField';
@@ -47,7 +47,6 @@ export default function Pathway() {
   const [data, setData] = React.useState(null);
   const [openSkill, setOpenSkill] = React.useState(false);
   const [openProject, setOpenProject] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
   const [reloadProjects, setReloadProjects] = React.useState(false)
   const [reloadSkills, setReloadSkills] = React.useState(false)
   const [skill, setSkill] = React.useState([]);
@@ -119,7 +118,6 @@ export default function Pathway() {
       value: 'Advanced',
 
     },
-
   ];
 
   const handleSubmitSkill = async (event) => {
@@ -128,7 +126,6 @@ export default function Pathway() {
       name: data.get('name'),
       level: data.get('level'),
     };
-    console.log(JSON.stringify(formData))
     try {
       const url = `http://localhost:3001/profiles/${userId}/skills`;
       const response = await fetch(url, {
@@ -139,20 +136,13 @@ export default function Pathway() {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response)
       if (!response.ok) {
-        setSuccess(false)
         throw new Error('Adding skill failed');
       }
-      setSuccess(true)
     } catch (error) {
       console.error('Adding skill failed:', error.message);
-      setSuccess(false);
     }
   };
-
-
-
 
   const handleChange = (event) => {
     const input = event.target.value;
@@ -168,7 +158,6 @@ export default function Pathway() {
       role: data.get('role'),
       skills: skill,
     };
-    console.log(JSON.stringify(formData))
     try {
       const url = `http://localhost:3001/profiles/${userId}/experience`;
       const response = await fetch(url, {
@@ -179,7 +168,6 @@ export default function Pathway() {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error('Adding project experience failed');
       }
@@ -320,7 +308,6 @@ export default function Pathway() {
                   <DialogActions>
                     <Button onClick={handleCloseSkill} > Cancel</Button>
                     <Button onClick={handleCloseSkill} type="submit">Save</Button>
-                    {success && <Alert severity="success">This is a success Alert.</Alert>} {/* NOT WORKING */}
                   </DialogActions>
                 </Dialog>
               </Box>

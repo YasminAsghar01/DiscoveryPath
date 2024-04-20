@@ -6,7 +6,6 @@ const { Employee } = require('../models/employee');
 
 router.get('/projects/:userId', async (req, res) => {
   const { userId } = req.params;
-
   try {
     const employee = await Employee.findOne({ employee_id: userId });
     if (!employee) {
@@ -29,7 +28,6 @@ router.get('/projects/:userId', async (req, res) => {
 
 router.get('/pathways/:userId', async (req, res) => {
   const { userId } = req.params;
-
   try {
     const employee = await Employee.findOne({ employee_id: userId });
     if (!employee) {

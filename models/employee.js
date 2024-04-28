@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi')
 
+//this creates the Employee model
 const employeeSchema = new mongoose.Schema({
   employee_id: {type: String, required: true},
   name: { type: String, required: true },
@@ -33,7 +34,33 @@ const employeeSchema = new mongoose.Schema({
 
 const Employee = mongoose.model('Employee', employeeSchema);
 
+const sanitizeInput = (data) => {
+  // sanitising email by removing trailing whitespace
+  data.email = data.email.trim();
+
+  // sanitising password by escaping special characters - guidance from stack overflow
+  data.password = data.password.replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&#x27;';
+      default:
+        return char;
+    }
+  });
+  return data;
+};
+
+// validates the email and password to ensure in correct format
 const validate = (data) => {
+  data = sanitizeInput(data);
   const schema =  Joi.object({
     email: Joi.string().email().required().label("Email Address"),
     password: Joi.string().required().label("Password")

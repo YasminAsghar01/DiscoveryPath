@@ -1,3 +1,4 @@
+// testing the main project page features
 describe('Main Project Page', () => {
   it('Explore Main Project Page', () => {
     cy.contains("Projects").should("exist").click();

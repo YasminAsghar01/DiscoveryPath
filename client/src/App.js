@@ -1,36 +1,37 @@
 import React from "react";
 import "./App.css";
+import DefaultThemeProvider from "./contents/theme";
+import { BrowserRouter as Router, Route, Navigate, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import HomePage from "./components/Home"
 import ProjectPage from "./components/ProjectPage";
 import PathwayPage from "./components/PathwayPage"
-import DefaultThemeProvider from "./contents/theme";
-import { BrowserRouter as Router, Route, Navigate, Routes } from "react-router-dom";
 import Project from "./components/Project";
 import Pathway from "./components/Pathway";
 import Login from './components/Login';
 import Profile from './components/Profile'
+import Favourites from "./components/FavouritesPage";
 
 const isAuthenticated = () => {
   const token = localStorage.getItem('token');
-  return !!token; // Return true if token exists
+  return !!token; // returns true if token exists
 };
 
 function App() {
   const [loggedIn, setLoggedIn] = React.useState(isAuthenticated());
 
-  // Function to handle login
+  // login function
   const handleLogin = () => {
     setLoggedIn(true);
   };
 
-  // Function to handle logout
+  // logout function
   const handleLogout = () => {
     localStorage.removeItem('token');
     setLoggedIn(false);
   };
-
+ // creates routes for each page - navigates backs to login page if user isn't authenticated
   return (
     <div className="App">
       <DefaultThemeProvider>
@@ -45,9 +46,7 @@ function App() {
             <Route path="/pathways/:pathwayName" element={loggedIn ? <Pathway /> : <Navigate to="/login" />} />
             <Route path="/profiles/:userId" element={loggedIn ? <Profile /> : <Navigate to="/login" />} />
             <Route path="/achievements" element={<h1>Learning and Achievements page</h1>} />
-            <Route path="/favourites" element={<h1>Favourites page</h1>} />
-            <Route path="/messages" element={<h1>Messages page</h1>} />
-            <Route path="/logout" element={<h1>Logout page</h1>} />
+            <Route path="/favourites" element={loggedIn ? <Favourites /> : <Navigate to="/login" />}/>
           </Routes>
         </Router>
         {isAuthenticated() && <Footer />}

@@ -2,12 +2,13 @@ import React from 'react';
 import { Button, ClickAwayListener, Grow, ButtonGroup, Popper, Paper, MenuItem, MenuList } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
 
-
+// this componenent creates a drop down with the options passed in
 const FilterDropdown = ({ options, onFilterChange }) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
+  // this captures what option the user clicks
   const handleMenuItemClick = (event, index, type = "null") => {
     setSelectedIndex(index);
     setOpen(false);
@@ -18,6 +19,7 @@ const FilterDropdown = ({ options, onFilterChange }) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
+  // closes dropdown
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
@@ -40,11 +42,11 @@ const FilterDropdown = ({ options, onFilterChange }) => {
               borderColor: "rgba(0, 0, 0, 0.4)",
               cursor: 'default',
             },
-            height: 40, // Set maximum width for the button
+            height: 40,
             width: 190
           }}
         >
-          {options[selectedIndex]}
+          {options[selectedIndex]} {/* sets to the option the user clicks */}
         </Button>
         <Button
           size="small"
@@ -58,7 +60,6 @@ const FilterDropdown = ({ options, onFilterChange }) => {
               borderColor: "rgba(0, 0, 0, 0.4)",
             },
           }}
-
         >
           <ArrowDropDown sx={{
             color: "rgba(0, 0, 0, 0.4)", backgroundColor: "white", '&:hover': {
@@ -67,12 +68,13 @@ const FilterDropdown = ({ options, onFilterChange }) => {
           }} />
         </Button>
       </ButtonGroup>
+      {/* when the arrow is clicked the Popper componenent with the options is shown */}
       <Popper
         sx={{
           zIndex: 1,
           height: 200,
-          maxHeight: 200, // Set maximum height for the menu
-          overflowY: 'auto', // Make the menu scrollable
+          maxHeight: 200,
+          overflowY: 'auto',
         }}
         open={open}
         anchorEl={anchorRef.current}

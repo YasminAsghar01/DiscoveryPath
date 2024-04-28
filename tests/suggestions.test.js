@@ -20,6 +20,7 @@ afterAll(async () => {
   await new Promise(resolve => server.close(resolve));
 });
 
+// tests requests made to API endpoint "/suggestions"
 describe('GET requests', () => {
   it('should respond with an error if employee id is not valid when suggesting projects', async () => {
     const res = await request(app).get('/suggestions/projects/1455701')

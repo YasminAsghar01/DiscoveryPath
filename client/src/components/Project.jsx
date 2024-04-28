@@ -1,22 +1,14 @@
 import * as React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Divider, IconButton } from "@mui/material";
-import SideNav from './sideNav';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { Chip, Button } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
 import { jwtDecode } from "jwt-decode";
+import {
+  Divider, IconButton, Avatar, Stack, Typography, Chip, Button, Card, CardHeader, CardContent,
+  Dialog, DialogActions, DialogContent, DialogTitle, Box, TextField, Autocomplete
+} from "@mui/material";
+import SideNav from './sideNav';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Box, TextField, MenuItem, Autocomplete } from '@mui/material'
 
+// from MUI documentation
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -60,6 +52,7 @@ export default function Project() {
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.employeeId;
 
+  // gets specific project information
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,7 +68,7 @@ export default function Project() {
     fetchData();
   }, [projectName, reloadTeamMembers]);
 
-
+  // gets all employee details
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -86,11 +79,10 @@ export default function Project() {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
 
-
+  // retrieves team members and project lead details
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
       try {
@@ -133,13 +125,13 @@ export default function Project() {
     { id: '5', text: 'Technologies' },
   ];
 
-  const handleAvatarClick = (memberId) => { // Event handler for the "Make Reservation" button.
-    window.scrollTo(0, 0); // Scroll to the top of the page.
+  const handleAvatarClick = (memberId) => {
+    window.scrollTo(0, 0);
     navigate(`/profiles/${memberId}`)
   }
 
-  const handlePathwayClick = (name) => { // Event handler for the "Make Reservation" button.
-    window.scrollTo(0, 0); // Scroll to the top of the page.
+  const handlePathwayClick = (name) => {
+    window.scrollTo(0, 0);
     navigate(`/pathways/${name}`)
   }
 
@@ -153,6 +145,7 @@ export default function Project() {
     setOpenTeamMember(false);
   };
 
+  // checks that user has selected an employee and creates post request if employee not a team member
   const handleSubmitEmployee = async (event) => {
     if (selectedEmployee) {
       if (data?.teamMembers.includes(selectedEmployee?.employee_id) ||
@@ -171,7 +164,6 @@ export default function Project() {
           },
           body: JSON.stringify({ employee_id: selectedEmployee.employee_id }),
         });
-        console.log(response)
         if (!response.ok) {
           throw new Error('Adding team member failed');
         }
@@ -180,7 +172,7 @@ export default function Project() {
         console.error('Adding team member failed:', error.message);
       }
     }
-    handleCloseTeamMember(); // Close the dialog after saving
+    handleCloseTeamMember();
   }
 
   return (
@@ -188,7 +180,6 @@ export default function Project() {
       {!data ? "Loading..." :
         <h1 style={{ fontWeight: 400, fontSize: 30, marginTop: 50 }}>{data.name}</h1>
       }
-
       <div style={{ display: 'flex', textAlign: 'left', paddingLeft: '10%' }}>
         <div style={{ flex: 1, padding: '20px' }}>
           {headings.map((heading) => (
@@ -198,7 +189,7 @@ export default function Project() {
                 {heading.text === 'Project Description' && data?.description ? <span>{data?.description}</span>
                   : null}
               </>
-
+              {/* renders all team members using MUI Avatar which navigate to team members profile */}
               <Stack direction="row" spacing={20}>
                 {heading.text === 'Team Members' && data?.project_lead && projectLeadName !== null
                   ?
@@ -246,14 +237,15 @@ export default function Project() {
                 }
               </Stack>
               <>
+              {/* shows card for available role and navigates to team chat with project lead if name clicked */}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
                   {heading.text === 'Availability' && data?.openRoles && data?.openRoles.length > 0
-                    ? data?.openRoles.map((test, index) => (
+                    ? data?.openRoles.map((role, index) => (
                       <Card key={index} sx={{
                         maxWidth: 200, minWidth: 250, minHeight: 200, display: 'flex',
                         flexDirection: 'column', overflow: 'hidden'
                       }}>
-                        <CardHeader sx={{ '& .MuiCardHeader-title': { fontSize: 17, paddingTop: 1, paddingBottom: 1, textDecoration: 'underline' } }} title={test.job_role} />
+                        <CardHeader sx={{ '& .MuiCardHeader-title': { fontSize: 17, paddingTop: 1, paddingBottom: 1, textDecoration: 'underline' } }} title={role.job_role} />
                         <CardContent sx={{
                           height: '100%',
                           display: 'flex',
@@ -263,9 +255,9 @@ export default function Project() {
                         }}>
                           <>
                             Requires knowledge in:
-                            {test?.skill_requirement ? test?.skill_requirement.map((test1, index) => (
+                            {role?.skill_requirement ? role?.skill_requirement.map((skill, index) => (
                               <span key={index}>
-                                {test1}
+                                {skill}
                               </span>
                             )) : null}
                           </>
@@ -293,6 +285,7 @@ export default function Project() {
                   : null}
               </>
               <>
+              {/* shows card for each linked pathway which navigates to specific pathway page */}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
                   {heading.text === 'Learning Pathways' && data?.recommended_pathway && data?.recommended_pathway.length > 0
                     ? data?.recommended_pathway.map((name, index) => (
@@ -324,10 +317,10 @@ export default function Project() {
               </>
               <>
                 {heading.text === 'Technologies' && data?.technologies
-                  ? data?.technologies.map((test, index) => (
+                  ? data?.technologies.map((tech, index) => (
                     <Chip
                       sx={{ backgroundColor: "#2D5592", color: "white", marginX: 5, marginBottom: 10, padding: 5 }}
-                      label={test}
+                      label={tech}
                       key={index} />
                   )) : null}
               </>
@@ -338,6 +331,7 @@ export default function Project() {
         </div>
         <SideNav headings={headings} />
       </div>
+      {/* form which appears for project lead to add new team member */}
       <Dialog
         open={openTeamMember}
         onClose={handleCloseTeamMember}

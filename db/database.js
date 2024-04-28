@@ -1,13 +1,12 @@
 const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose');
 
-// Connection URI
 const uri = 'mongodb://localhost:27017/discoverypath';
 
-// Create a new MongoClient
+// creating MongoClient
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Connect to the MongoDB server
+// connecting to MongoDB
 async function connectToMongo() {
   try {
     await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -17,5 +16,4 @@ async function connectToMongo() {
   }
 }
 
-// Call the function to connect
 module.exports = { connectToMongo, client };

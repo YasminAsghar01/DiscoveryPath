@@ -1,3 +1,4 @@
+// testing the homepage features
 describe('Homepage', () => {
   it('Explore Homepage', () => {
     cy.contains("Welcome Michael Brown").should("exist");

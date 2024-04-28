@@ -1,3 +1,4 @@
+// testing the main pathway page features
 describe('Main Pathway Page', () => {
   it('Explore Main Pathway Page', () => {
     cy.contains("Pathways").should("exist").click();

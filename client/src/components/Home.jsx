@@ -10,23 +10,26 @@ const Home = () => {
   const [likedPathway, setLikedPathway] = React.useState([]);
   const [likedProject, setLikedProject] = React.useState([]);
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token"); // gets the users JWT token
   const decodedToken = jwtDecode(token);
   const userName = decodedToken.name;
   const employeeId = decodedToken.employeeId
 
+  // gets all the projects the user has favourited
   React.useEffect(() => {
     fetch(`/profiles/${employeeId}`)
       .then((res) => res.json().then((data) => setLikedProject(data.favouriteProjects)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [employeeId]);
 
+  // gets all the pathways the user has favourited
   React.useEffect(() => {
     fetch(`/profiles/${employeeId}`)
       .then((res) => res.json().then((data) => setLikedPathway(data.favouritePathways)))
       .catch((error) => console.error("Error fetching data:", error));
   }, [employeeId]);
 
+  // gets project suggestions based on user
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,6 +43,7 @@ const Home = () => {
     fetchData();
   }, [employeeId]);
 
+  // gets pathway suggestions based on user
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,6 +57,7 @@ const Home = () => {
     fetchData();
   }, [employeeId]);
 
+  // This maps  the project and pathway cards suggested to the user
   return (
     <div style={{ marginLeft: 10 }}>
       <div style={{ marginLeft: 30, marginRight: 30, marginTop: 30, marginBottom: 37 }}>

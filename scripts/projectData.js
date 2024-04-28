@@ -1,13 +1,11 @@
-// seedData.js
 const mongoose = require('mongoose');
 const Project = require('../models/project');
-const { Employee }= require('../models/employee')
 
-// Connect to MongoDB
+// connects to MongoDB
 mongoose.connect('mongodb://localhost:27017/discoverypath', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
-// Sample project data
+// adds sample project data
 const projectsData = [
   {
     name: 'Project A',
@@ -66,7 +64,7 @@ const projectsData = [
     start_date: new Date(),
     end_date: new Date(),
     project_lead: '1445704',
-    technologies: ['Python', 'Cypress', 'Jest'], // Add employee IDs if you have an Employee model
+    technologies: ['Python', 'Cypress', 'Jest'],
     openRoles: [
       {
         job_role: 'QA Engineer',
@@ -118,25 +116,24 @@ const projectsData = [
   },
 ];
 
-// Function to seed projects
-async function seedProjects() {
+
+async function addProjects() {
   try {
-    // Remove existing projects
+
     await Project.deleteMany();
 
-    // Seed projects
+
     const seededProjects = await Project.create(projectsData);
 
     console.log('Projects seeded successfully:', seededProjects);
   } catch (error) {
     console.error('Error seeding projects:', error);
   } finally {
-    // Close the MongoDB connection
+
     mongoose.connection.close();
   }
 }
 
-// Call the seedProjects function
-seedProjects();
+addProjects();
 
 

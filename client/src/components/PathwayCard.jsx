@@ -1,23 +1,18 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { IconButton } from '@mui/material';
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
+import { Card, CardHeader, CardContent, Typography, Button, IconButton } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import { jwtDecode } from "jwt-decode";
 
 export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway }) {
   const navigate = useNavigate();
-
-  const onReserve = () => { // Event handler for the "Make Reservation" button.
-    window.scrollTo(0, 0); // Scroll to the top of the page.
-    navigate(`/pathways/${encodeURIComponent(cardcontent.name)}`, { // Navigate to the "/make-reservation" route.
+  // navigates to specific pathway page
+  const onReserve = () => {
+    window.scrollTo(0, 0);
+    navigate(`/pathways/${encodeURIComponent(cardcontent.name)}`, {
       state: {
-        pathway: cardcontent, // Pass the `location` prop as state to this route.
+        pathway: cardcontent,
       }
     })
   }
@@ -27,8 +22,8 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
   const userId = decodedToken.employeeId;
 
   const isInLiked = () => {
-    const inLiked = likedPathway.find(item => item===cardcontent.name );
-    if (inLiked) {
+    const inLiked = likedPathway.find(item => item === cardcontent.name);
+    if (inLiked) {  // if user has already liked the pathway, will delete this from their favourites
       const deleteFavourite = async () => {
         const pathwayName = cardcontent.name
         try {
@@ -38,15 +33,13 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
               'Content-Type': 'application/json'
             }
           });
-
           if (!response.ok) {
             throw new Error('Failed to delete heart from database');
           }
           else {
-            setLikedPathway(likedPathway.filter(p=> p !==pathwayName))
+            setLikedPathway(likedPathway.filter(p => p !== pathwayName))
             return
           }
-
         } catch (error) {
           console.error('Error removing heart from database:', error);
         }
@@ -55,11 +48,10 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
     }
     else {
       setLikedPathway([...likedPathway, cardcontent.name])
-      const submitFavourite = async () => {
+      const submitFavourite = async () => { // add pathway to users favourites
         const formData = {
           name: cardcontent.name
         };
-        console.log(JSON.stringify(formData))
         try {
           const url = `http://localhost:3001/profiles/${userId}/favouritePathway`;
           const response = await fetch(url, {
@@ -70,11 +62,9 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
             },
             body: JSON.stringify(formData),
           });
-          console.log(response)
           if (!response.ok) {
             throw new Error('Failed to update favourite');
           }
-
         } catch (error) {
           console.error('Failed to update favourite:', error.message);
         }
@@ -84,10 +74,11 @@ export default function ProjectCard({ cardcontent, setLikedPathway, likedPathway
   }
 
   return (
-    <Card sx={{ maxWidth: 345, minHeight: 300,zIndex: 1 }}>
+    <Card sx={{ maxWidth: 345, minHeight: 300, zIndex: 1 }}>
       <div style={{ marginTop: 15, marginBottom: -30, marginLeft: 165 }}>
         <IconButton onClick={isInLiked} >
-          {likedPathway.includes(cardcontent.name ) ? <FavoriteOutlinedIcon color="primary" /> : <FavoriteBorderOutlinedIcon />}
+          {/* if in users favourites, will show filled in heart icon */}
+          {likedPathway.includes(cardcontent.name) ? <FavoriteOutlinedIcon color="primary" /> : <FavoriteBorderOutlinedIcon />}
         </IconButton>
       </div>
       <CardHeader sx={{ paddingTop: 30 }} title={cardcontent.name} />

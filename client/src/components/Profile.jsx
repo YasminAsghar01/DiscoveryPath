@@ -1,20 +1,14 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import { Typography, Avatar, Box, Button, MenuItem } from "@mui/material";
-import Grid from '@mui/material/Grid';
-import { PieChart } from '@mui/x-charts/PieChart';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import Tooltip from '@mui/material/Tooltip';
 import { jwtDecode } from "jwt-decode";
+import {
+  Card, CardHeader, CardContent, Typography, Avatar, Box, Button, MenuItem, Grid, TextField,
+  Dialog, DialogActions, DialogContent, DialogTitle, Tooltip
+} from "@mui/material";
+import { PieChart } from '@mui/x-charts/PieChart';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
+// from MUI documentation
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -42,7 +36,7 @@ function stringAvatar(name) {
   };
 }
 
-export default function Pathway() {
+export default function Profile() {
   const { userId } = useParams();
   const [data, setData] = React.useState(null);
   const [openSkill, setOpenSkill] = React.useState(false);
@@ -55,6 +49,7 @@ export default function Pathway() {
   const decodedToken = jwtDecode(token);
   const employeeId = decodedToken.employeeId;
 
+  // retrieves users information
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,6 +66,7 @@ export default function Pathway() {
     fetchData();
   }, [userId, reloadSkills, reloadProjects]);
 
+  // maps profiency level to a value for pie chart sector size
   var skills = []
   if (data?.skills.length > 0) {
     data?.skills.map((skill) => {
@@ -108,18 +104,16 @@ export default function Pathway() {
   const levels = [
     {
       value: 'Beginner',
-
     },
     {
       value: 'Intermediate',
-
     },
     {
       value: 'Advanced',
-
     },
   ];
 
+  // creates new skills for user
   const handleSubmitSkill = async (event) => {
     const data = new FormData(event.currentTarget);
     const formData = {
@@ -150,6 +144,7 @@ export default function Pathway() {
     setSkill(skillArray);
   };
 
+  // creates new project experience for user
   const handleSubmitProject = async (event) => {
     const data = new FormData(event.currentTarget);
     const formData = {
@@ -175,7 +170,7 @@ export default function Pathway() {
       console.error('Adding project experience failed:', error.message);
     }
   };
-
+  // renders Grid with 4 sections
   return (
     <>
       {!data ? "Loading..." :
@@ -238,7 +233,7 @@ export default function Pathway() {
           </Card>
         </Grid>
       </Grid>
-
+      {/* renders PieChart with user skills */}
       <Grid container spacing={600}>
         <Grid item xs={4}>
           <Card sx={{ height: 400, width: 600, marginLeft: 50, marginTop: 60, backgroundColor: '#F7F5F5' }}>
@@ -256,6 +251,7 @@ export default function Pathway() {
                   width={500}
                   height={300}
                 />
+                {/* can add skills only if its user profile */}
                 {employeeId === userId &&
                   <Tooltip title="Add skill" arrow>
                     <Button className="addskillbutton" onClick={handleClickOpenSkill} style={{
@@ -319,6 +315,7 @@ export default function Pathway() {
           <Card sx={{ height: 400, width: 600, margin: 55, marginTop: 60, backgroundColor: '#F7F5F5', overflow: 'auto' }}>
             <CardHeader sx={{ paddingTop: 20, paddingBottom: 10 }} titleTypographyProps={{ sx: { fontSize: 17, textDecoration: 'underline' } }} title='Project Experience' />
             <Box display="flex" marginLeft={530} marginTop={-17} marginBottom={5} >
+              {/* can only add experience if users profile */}
               {employeeId === userId &&
                 <Tooltip title="Add project" arrow>
                   <Button className="addprojectbutton" onClick={handleClickOpenProject} style={{

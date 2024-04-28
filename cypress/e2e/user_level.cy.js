@@ -1,3 +1,4 @@
+//testing features specific to resource manager and project lead
 describe('User Specific features', () => {
   it('Explore User Specific features', () => {
     cy.get('.MuiAvatar-root').eq(0).click()
@@ -13,7 +14,7 @@ describe('User Specific features', () => {
     cy.contains("Projects").should("exist").click();
     cy.url().should('include', '/projects')
     cy.viewport(1400, 800);
-    cy.get('.addskillbutton').should('exist').click()
+    cy.get('.addskillbutton').should('exist').click() //test creating a project
     cy.get('.MuiDialog-container').should('be.visible');
     cy.get('input[id="name"]').type('Discovery Path').should('have.value', 'Discovery Path')
     cy.get('#description').type('Description for Discovery Path').should('have.value', 'Description for Discovery Path')
@@ -25,7 +26,7 @@ describe('User Specific features', () => {
     cy.get('button').contains('Save').click()
     cy.contains('Discovery Path').should("exist").parents('.MuiCard-root').find('.MuiButton-root').click();
     cy.wait(1000)
-    cy.get('.addMemberbutton').eq(0).should('exist').click()
+    cy.get('.addMemberbutton').eq(0).should('exist').click() //test adding a team member
     cy.get('.MuiDialog-container').should('be.visible');
     cy.contains('Add a new team member').should('be.visible');
     cy.get('input').type('Sarah Lee{enter}').should('have.value', 'Sarah Lee')
@@ -33,7 +34,7 @@ describe('User Specific features', () => {
     cy.contains('Sarah Lee').should("exist");
     cy.contains("Pathways").should("exist").click();
     cy.url().should('include', '/pathways')
-    cy.get('.addskillbutton').should('exist').click()
+    cy.get('.addskillbutton').should('exist').click() //test creating a pathway
     cy.get('.MuiDialog-container').should('be.visible');
     cy.get('input[id="name"]').type('AZ-900').should('have.value', 'AZ-900')
     cy.get('#description').type('Description for AZ-900').should('have.value', 'Description for AZ-900')

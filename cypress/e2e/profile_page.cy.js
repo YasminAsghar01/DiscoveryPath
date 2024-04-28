@@ -1,3 +1,4 @@
+// testing all features on the profile page
 describe('Profile Page', () => {
   it('Explore Profile Page', () => {
     cy.get('.MuiAvatar-root').eq(0).click()

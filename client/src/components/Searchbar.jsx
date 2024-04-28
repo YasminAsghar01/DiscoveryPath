@@ -1,4 +1,3 @@
-// SearchBar.js
 import React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -6,6 +5,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Search from '@mui/icons-material/Search';
 
+// this component creates the search bar, allowing users to input their query
 const SearchBar = ({ setSearchQuery }) => (
   <Box sx={{ marginRight: 20 }}>
     <TextField

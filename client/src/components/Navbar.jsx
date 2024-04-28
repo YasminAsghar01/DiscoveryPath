@@ -1,8 +1,9 @@
-import { AppBar, Toolbar, styled, Typography, Button, Popper, IconButton, Divider, Link, Avatar } from "@mui/material";
 import React from "react";
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { jwtDecode } from "jwt-decode";
+import { AppBar, Toolbar, styled, Typography, Button, Popper, IconButton, Divider, Link, Avatar } from "@mui/material";
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
+// adjusts styling of MUI components
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between",
@@ -29,6 +30,7 @@ const StyledButton = styled(Button)(`
   text-transform: none;
 `);
 
+// from MUI documentation
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -56,14 +58,18 @@ function stringAvatar(name) {
   };
 }
 
+// creates the navbar which is rendered of each page of the app
 const Navbar = ({ onLogout }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userName = decodedToken.name;
   const userId = decodedToken.employeeId;
+
   const open = Boolean(anchorEl);
 
+  // controls the dropdown rendered when clicking users initials
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -80,6 +86,7 @@ const Navbar = ({ onLogout }) => {
 
   return (
     <AppBar sx={{ zIndex: 2 }} position="relative">
+      {/* first three elements on the navbar are buttons which navigate the user to another page */}
       <StyledToolbar sx={{ borderBottom: 2, borderBottomColor: "#2D5592" }}>
         <StyledButton
           href="/"
@@ -108,6 +115,7 @@ const Navbar = ({ onLogout }) => {
             Pathways
           </Typography>
         </StyledButton>
+        {/* users avatar which contains their intials can be clicked to show the dropdown with profile page option */}
         <ClickAwayListener onClickAway={handleClose}>
           <IconButton
             aria-label=""
@@ -140,7 +148,7 @@ const Navbar = ({ onLogout }) => {
             >
               My Details:
             </Typography>
-
+            {/* navigate to users profile page */}
             <Link href={`/profiles/${userId}`} sx={{ textDecoration: "none", color: "black" }} >
               <Typography
                 sx={{
@@ -183,21 +191,6 @@ const Navbar = ({ onLogout }) => {
                 style={{ fontWeight: window.location.pathname === '/favourites' ? 'bold' : 'null' }}
               >
                 Favourites
-              </Typography>
-            </Link>
-            <Divider sx={{ paddingBottom: 4 }} />
-            <Link href="/messages" sx={{ textDecoration: "none", color: "black" }}>
-              <Typography
-                sx={{
-                  fontSize: 15,
-                  fontWeight: 400,
-                  marginLeft: 0,
-                  marginRight: 50,
-                  padding: 5
-                }}
-                style={{ fontWeight: window.location.pathname === '/messages' ? 'bold' : 'null' }}
-              >
-                Messages
               </Typography>
             </Link>
             <Divider sx={{ paddingBottom: 4 }} />

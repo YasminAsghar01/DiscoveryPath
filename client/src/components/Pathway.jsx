@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Divider, IconButton } from "@mui/material";
+import { Divider, IconButton, Avatar, Stack, Typography, Chip } from "@mui/material";
 import SideNav from './sideNav';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { Chip } from '@mui/material';
 
+// from MUI documentation
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -33,12 +30,14 @@ function stringAvatar(name) {
   };
 }
 
+// this renders an individual pathway page
 export default function Pathway() {
-  const { pathwayName } = useParams();
-  const navigate = useNavigate();
   const [data, setData] = React.useState(null);
   const [teamMemberNames, setTeamMemberNames] = React.useState([]);
+  const { pathwayName } = useParams(); //gets name of the pathway from the parameters
+  const navigate = useNavigate();
 
+  // gets all information about the pathway
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,6 +51,7 @@ export default function Pathway() {
     fetchData();
   }, [pathwayName]);
 
+  // gets information on all users that have completed the pathway
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
       try {
@@ -80,11 +80,12 @@ export default function Pathway() {
 
   }, [data?.completedUsers]);
 
-  const handleAvatarClick = (name, memberId) => { // Event handler for the "Make Reservation" button.
-    window.scrollTo(0, 0); // Scroll to the top of the page.
-    navigate(`/profiles/${memberId}`)
+  const handleAvatarClick = (name, memberId) => {
+    window.scrollTo(0, 0);
+    navigate(`/profiles/${memberId}`) // when team member avatar clicked, this navigates to their profile page
   }
 
+  // maps headings and renders information based on these headings
   const headings = [
     { id: '1', text: 'Pathway Description' },
     { id: '2', text: 'Link to Pathway' },
@@ -119,10 +120,10 @@ export default function Pathway() {
               </>
               <>
                 {heading.text === 'Skills Gained' && data?.technologies
-                  ? data?.technologies.map((test, index) => (
+                  ? data?.technologies.map((skill, index) => (
                     <Chip
                       sx={{ backgroundColor: "#2D5592", color: "white", marginX: 5, marginBottom: 10, padding: 5 }}
-                      label={test}
+                      label={skill}
                       key={index} />
                   )) : null}
               </>

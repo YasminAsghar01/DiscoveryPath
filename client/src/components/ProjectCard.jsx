@@ -1,22 +1,17 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { Grid, IconButton, formLabelClasses } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+import { IconButton, Card, CardHeader, CardContent, Typography, Button } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import { jwtDecode } from "jwt-decode";
 
 export default function ProjectCard({ cardcontent, setLikedProject, likedProject }) {
   const navigate = useNavigate();
-  const onReserve = () => {
-    window.scrollTo(0, 0); // Scroll to the top of the page.
+  const onReserve = () => { // navigates to specific project page
+    window.scrollTo(0, 0);
     navigate(`/projects/${encodeURIComponent(cardcontent.name)}`, {
       state: {
-        project: cardcontent, // Pass the `location` prop as state to this route.
+        project: cardcontent,
       }
     })
   }
@@ -26,8 +21,8 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
   const userId = decodedToken.employeeId;
 
   const isInLiked = () => {
-    const inLiked = likedProject.find(item => item===cardcontent.name );
-    if (inLiked) {
+    const inLiked = likedProject.find(item => item === cardcontent.name);
+    if (inLiked) { // if user has already liked the project, will delete this from their favourites
       const deleteFavourite = async () => {
         const projectName = cardcontent.name
         try {
@@ -42,7 +37,7 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
             throw new Error('Failed to delete heart from database');
           }
           else {
-            setLikedProject(likedProject.filter(p=> p !==projectName))
+            setLikedProject(likedProject.filter(p => p !== projectName))
             return
           }
 
@@ -54,11 +49,10 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
     }
     else {
       setLikedProject([...likedProject, cardcontent.name])
-      const submitFavourite = async () => {
+      const submitFavourite = async () => { // add project to users favourites
         const formData = {
           name: cardcontent.name
         };
-        console.log(JSON.stringify(formData))
         try {
           const url = `http://localhost:3001/profiles/${userId}/favouriteProject`;
           const response = await fetch(url, {
@@ -69,11 +63,9 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
             },
             body: JSON.stringify(formData),
           });
-          console.log(response)
           if (!response.ok) {
             throw new Error('Failed to update favourite');
           }
-
         } catch (error) {
           console.error('Failed to update favourite:', error.message);
         }
@@ -81,6 +73,7 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
       submitFavourite()
     }
   }
+  //get project lead details
   const [projectLeadName, setProjectLeadName] = React.useState(null);
   React.useEffect(() => {
     const fetchEmployeeData = async (userId) => {
@@ -97,14 +90,14 @@ export default function ProjectCard({ cardcontent, setLikedProject, likedProject
       }
     }
     fetchEmployeeData(cardcontent.project_lead)
-
   }, [cardcontent.project_lead]);
 
   return (
     <Card sx={{ maxWidth: 345, minHeight: 300, zIndex: 1 }}>
-      <div style={{ marginTop: 15, marginBottom: -30, marginLeft: 165, zIndex:0 }}>
+      <div style={{ marginTop: 15, marginBottom: -30, marginLeft: 165, zIndex: 0 }}>
         <IconButton onClick={isInLiked} >
-          {likedProject.includes(cardcontent.name ) ? <FavoriteOutlinedIcon color="primary" /> : <FavoriteBorderOutlinedIcon />}
+          {/* if in users favourites, will show filled in heart icon */}
+          {likedProject.includes(cardcontent.name) ? <FavoriteOutlinedIcon color="primary" /> : <FavoriteBorderOutlinedIcon />}
         </IconButton>
       </div>
       <CardHeader sx={{ paddingTop: 30 }} title={cardcontent.name} />

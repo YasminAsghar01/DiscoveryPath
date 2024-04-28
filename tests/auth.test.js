@@ -20,6 +20,7 @@ afterAll(async () => {
   await new Promise(resolve => server.close(resolve));
 });
 
+// tests requests made to API endpoint "/login" - guidance from Jest documentation
 describe('POST /login', () => {
   it('should respond with an error if no valid credentials provided', async () => {
     const res = await request(app)
@@ -33,7 +34,7 @@ describe('POST /login', () => {
       .post('/login')
       .send({ email: 'emma.johnson@example.com', password: 'securepass' });
 
-    expect(res.body.data).toBeDefined(); // Assuming your response contains a 'data' field with the token
+    expect(res.body.data).toBeDefined();
     expect(res.body.message).toBe('Logged in successfully');
 
   });

@@ -20,6 +20,7 @@ afterAll(async () => {
   await new Promise(resolve => server.close(resolve));
 });
 
+// tests requests made to API endpoint "/profiles"
 describe('GET requests', () => {
   it('should respond with a json of all profiles if request successful', async () => {
     const res = await request(app).get('/profiles')

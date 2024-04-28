@@ -1,8 +1,10 @@
-// projectRoutes.js
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/project');
 
+// handles requests made to "/projects"
+
+//gets all projects
 router.get('/', async (req, res) => {
   try {
     const projects = await Project.find();
@@ -14,7 +16,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a specific project by ID
+// gets a specific project by name
 router.get('/:projectName', async (req, res) => {
 
   const { projectName } = req.params;
@@ -43,18 +45,16 @@ router.post('/:projectName', async (req, res) => {
       if (updatedFields.length === 0) {
         return res.status(400).json({ error: 'Project already exists and No fields to update' });
       }
-      project.teamMembers.push(req.body.employee_id);
+      project.teamMembers.push(req.body.employee_id); // adds employee as team member on project
       project = await project.save();
       res.sendStatus(200)
       return
     } else { // If the project doesn't exist, create a new one
-      project = await Project.create({ name: projectName, description: req.body.description, start_date: req.body.start_date, end_date: req.body.end_date, project_lead: req.body.project_lead, technologies: req.body.technologies, teamMembers:req.body.team_members  })
+      project = await Project.create({ name: projectName, description: req.body.description, start_date: req.body.start_date, end_date: req.body.end_date, project_lead: req.body.project_lead, technologies: req.body.technologies, teamMembers: req.body.team_members })
       if (project instanceof Project) {
-        console.log('Document created successfully');
         res.sendStatus(200)
         return
       } else {
-        console.log('Document not created');
         res.sendStatus(500)
         return
       }

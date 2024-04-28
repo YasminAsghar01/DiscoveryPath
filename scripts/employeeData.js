@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const { Employee } = require('../models/employee');
 const bcrypt = require('bcrypt');
 
-// Connect to MongoDB
+// connects to MongoDB
 mongoose.connect('mongodb://localhost:27017/discoverypath', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Sample project data
+// add sample employee data
 const EmployeesData = [
   {
     employee_id: '1445701',
@@ -114,7 +114,7 @@ const EmployeesData = [
       { name: 'Figma', proficiency_level: 'Advanced' },
     ],
     project_experience: [
-      { name: 'Project R', role: 'UI Designer', skills_gained: ['Figma'], end_date: '2022-08-25'}
+      { name: 'Project R', role: 'UI Designer', skills_gained: ['Figma'], end_date: '2022-08-25' }
     ],
     favouriteProjects: [],
     favouritePathways: [],
@@ -123,22 +123,21 @@ const EmployeesData = [
 
 const saltRounds = 10;
 
-async function seedProjects() {
+async function addEmployees() {
   try {
-    // Remove existing projects
+
     await Employee.deleteMany();
 
     const hashedEmployeesData =
-    await Promise.all(EmployeesData.map(async (employeeData) => {
-      const hashedPassword = await bcrypt.hash(employeeData.password, saltRounds);
-      return {
-        ...employeeData,
-        password: hashedPassword, // Replace plain password with hashed password
-      };
-    }));
+      await Promise.all(EmployeesData.map(async (employeeData) => {
+        const hashedPassword = await bcrypt.hash(employeeData.password, saltRounds);
+        return {
+          ...employeeData,
+          password: hashedPassword, // replace plain password with hashed password and stores in database
+        };
+      }));
 
     const seededProjects = await Employee.create(hashedEmployeesData);
-
     console.log('Projects seeded successfully:', seededProjects);
   } catch (error) {
     console.error('Error seeding projects:', error);
@@ -146,4 +145,4 @@ async function seedProjects() {
     mongoose.connection.close();
   }
 }
-seedProjects();
+addEmployees();

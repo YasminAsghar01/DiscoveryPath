@@ -3,7 +3,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import { Box, Divider, Container } from "@mui/material";
 
-//This is a React component. It renders the footer on each page of the app
+//This uses MUI Box to create the footer which is seen on each page of the app
 const Footer = () => {
   return (
     <React.Fragment>

@@ -1,29 +1,16 @@
 import React from "react";
-import { Button, Grid, Container, ClickAwayListener, Grow, ButtonGroup, Popper, Paper, Divider } from "@mui/material";
-import ProjectCard from "./ProjectCard";
-import { ArrowDropDown } from "@mui/icons-material";
-import { Box, TextField } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { useState } from 'react'
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FormControl from '@mui/material/FormControl';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import SearchBar from "./Searchbar";
-import FilterDropdown from "./FilterDropdown";
 import { jwtDecode } from "jwt-decode";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import ProjectCard from "./ProjectCard";
+import SearchBar from "./Searchbar";
+import FilterMenu from "./FilterMenu";
+import FilterDropdown from "./FilterDropdown";
+import {
+  Button, Grid, Container, Box, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Tooltip
+} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import Tooltip from '@mui/material/Tooltip';
 
+// this button appear for a resource manager so they can create a project
 const AddProjectButton = ({ setReloadProjects }) => {
   const [openProject, setOpenProject] = React.useState(false);
   const [technologies, setTechnologies] = React.useState([]);
@@ -37,6 +24,7 @@ const AddProjectButton = ({ setReloadProjects }) => {
     setOpenProject(false);
   };
 
+  // adds users input into an array
   const handleTechChange = (event) => {
     const input = event.target.value;
     const techArray = input.split(',').map((s) => s.trim());
@@ -49,6 +37,7 @@ const AddProjectButton = ({ setReloadProjects }) => {
     setTeamMembers(teamMemberArray);
   }
 
+  // post request creates a project
   const handleSubmitProject = async (event) => {
     const data = new FormData(event.currentTarget);
     const formData = {
@@ -60,7 +49,6 @@ const AddProjectButton = ({ setReloadProjects }) => {
       technologies: technologies,
       team_members: team_members
     };
-    console.log(JSON.stringify(formData))
     try {
       const url = `http://localhost:3001/projects/${formData.name}`;
       const response = await fetch(url, {
@@ -71,7 +59,6 @@ const AddProjectButton = ({ setReloadProjects }) => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error('Adding project failed');
       }
@@ -82,6 +69,7 @@ const AddProjectButton = ({ setReloadProjects }) => {
 
   return (
     <>
+      {/* shows form to create project when add button is clicked */}
       <Tooltip title="Add project" arrow>
         <Button className="addskillbutton" onClick={handleClickOpenProject}
           style={{
@@ -182,7 +170,7 @@ const AddProjectButton = ({ setReloadProjects }) => {
             value={technologies.join(', ')}
             onChange={handleTechChange}
           />
-           <TextField
+          <TextField
             autoFocus
             margin="dense"
             id="team_members"
@@ -204,175 +192,6 @@ const AddProjectButton = ({ setReloadProjects }) => {
   )
 }
 
-const FilterMenu = () => {
-  const names = [
-    ['Languages'],
-    ['Libraries'],
-    ['Tools'],
-    ['Start Date'],
-    ['End Date']
-  ];
-
-  const [state, setState] = React.useState({
-    javascript: false,
-    python: false,
-    java: false,
-  });
-
-  const handleChange = (event) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
-  const { javascript, python, java } = state;
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  // const handleMenuItemClick = (event, index, type = "null") => {
-  //   setSelectedIndex(index);
-  //   setOpen(false);
-  // };
-
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  // const handleClick = (event, index) => {
-  //   setAnchorEl(event.currentTarget);
-  //   setSelectedIndex(index);
-  // };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setAnchorEl(null);
-    setOpen(false);
-  };
-
-  return (
-    <React.Fragment>
-      <ButtonGroup ref={anchorRef} aria-label="split button">
-        <Button
-          sx={{
-            textTransform: "capitalize",
-            color: "rgba(0, 0, 0, 0.7)",
-            borderColor: "rgba(0, 0, 0, 0.4)",
-            paddingY: 5,
-            fontSize: 16,
-            backgroundColor: "white",
-            '&:hover': {
-              borderColor: "rgba(0, 0, 0, 0.4)",
-              cursor: 'default',
-            },
-          }}
-        >
-          <FilterListIcon sx={{ marginRight: 10 }} />
-          Filters
-        </Button>
-        <Button
-          size="small"
-          aria-controls={open ? "split-button-menu" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-label="select merge strategy"
-          aria-haspopup="menu"
-          onClick={handleToggle}
-          sx={{
-            borderColor: "rgba(0, 0, 0, 0.4)", backgroundColor: "white", '&:hover': {
-              borderColor: "rgba(0, 0, 0, 0.4)",
-            },
-          }}
-        >
-          <ArrowDropDown sx={{
-            color: "rgba(0, 0, 0, 0.4)", backgroundColor: "white", '&:hover': {
-              borderColor: "rgba(0, 0, 0, 0.4)",
-            },
-          }} />
-        </Button>
-      </ButtonGroup>
-      <Popper
-        sx={{
-          zIndex: 2,
-          height: 200,
-          width: 250,
-
-        }}
-        open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom",
-            }}
-          >
-            <Paper sx={{ maxHeight: 250, overflow: "auto", padding: 5 }}>
-              <ClickAwayListener onClickAway={handleClose}>
-                <div>
-                  {names.map((option) => (
-                    <div>
-                      <Accordion>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls="panel1a-content"
-                          id="panel1a-header"
-                          sx={{
-                            flexDirection: 'row-reverse', // Change the direction to have the icon on the left
-                            '& .MuiAccordionSummary-content': {
-                              marginLeft: 0, // Adjust margin as needed
-                            },
-                          }}
-                        >
-                          <Typography>{option[0]}</Typography>
-                        </AccordionSummary>
-                        <Divider />
-                        <AccordionDetails>
-                          <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-                            <FormGroup>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox checked={javascript} onChange={handleChange} name="javascript" />
-                                }
-                                label="javascript"
-                              />
-                              <FormControlLabel
-                                control={
-                                  <Checkbox checked={python} onChange={handleChange} name="python" />
-                                }
-                                label="python"
-                              />
-                              <FormControlLabel
-                                control={
-                                  <Checkbox checked={java} onChange={handleChange} name="java" />
-                                }
-                                label="java"
-                              />
-                            </FormGroup>
-                          </FormControl>
-                        </AccordionDetails>
-                      </Accordion>
-                    </div>
-                  ))}
-                </div>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </React.Fragment>
-  );
-};
-
-
 const Projects = () => {
   const [data, setData] = React.useState(null);
   const [searchQuery, setSearchQuery] = useState("")
@@ -386,12 +205,34 @@ const Projects = () => {
   const userRole = decodedToken.role;
   const userId = decodedToken.employeeId;
 
+  //options passed to FilterDropdown component
   const projectOptions = [
     "All Projects",
     "Available Projects",
     "Favourite Projects",
   ];
 
+  // filtering options passed to FilterMenu component
+  const filter_options = [
+    {
+      heading: 'Languages',
+      options: ['JavaScript', 'Python', 'Java', 'C++']
+    },
+    {
+      heading: 'Libraries',
+      options: ['React', 'Vue', 'Angular']
+    },
+    {
+      heading: 'Tools',
+      options: ['GitHub', 'Jira', 'Bitbucket']
+    },
+    {
+      heading: 'Duration',
+      options: ['Days', 'Weeks', 'Months', 'Years']
+    },
+  ];
+
+  // filters project cards based on users search query and dropdown option
   React.useEffect(() => {
     const filtered = data?.filter((item) => {
       const match = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -410,6 +251,7 @@ const Projects = () => {
     setSearchQuery(query);
   };
 
+  // filters project cards based on dropdown
   const handleFilterChange = (selectedOption) => {
     setSelectedFilter(selectedOption);
 
@@ -430,6 +272,7 @@ const Projects = () => {
     }
   };
 
+  // retrieves all projects
   React.useEffect(() => {
     fetch("/projects")
       .then((res) => res.json().then((data) => {
@@ -439,6 +282,7 @@ const Projects = () => {
       .catch((error) => console.error("Error fetching data:", error));
   }, [reloadProjects]);
 
+  // retrieves the users favourite projects
   React.useEffect(() => {
     fetch(`/profiles/${userId}`)
       .then((res) => res.json().then((data) => setLikedProject(data.favouriteProjects)))
@@ -480,14 +324,14 @@ const Projects = () => {
             <FilterDropdown options={projectOptions} onFilterChange={handleFilterChange} />
           </div>
           <div style={{ marginRight: 40 }}>
-            <FilterMenu />
+            <FilterMenu options={filter_options} />
           </div>
           <SearchBar searchQuery={searchQuery} setSearchQuery={handleSearchQuery} />
           <div style={{ marginLeft: 200 }}>
             {userRole === 'Resource Manager' ? <AddProjectButton setReloadProjects={setReloadProjects} /> : null}
           </div>
         </Box>
-
+        {/* passes information to project card component to create project card for each project */}
         <Grid sx={{ overflow: 'auto', maxHeight: '100vh' }} container spacing={2}  >
           {!data ? "Loading..." : filteredData?.map((project, index) => (
             <Grid key={index} style={{ padding: "25px" }} item xs={12} sm={6} md={4} lg={3}>

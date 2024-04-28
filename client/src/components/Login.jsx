@@ -1,13 +1,9 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { LockOutlined } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { Avatar, Button, TextField, Paper, Box, Grid } from '@mui/material';
 
 export default function Login() {
+  // creates a POST request with users email and password to authenticate user
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -15,7 +11,6 @@ export default function Login() {
       email: data.get('email'),
       password: data.get('password'),
     };
-    console.log(JSON.stringify(credentials))
     try {
       const url = "http://localhost:3001/login";
       const response = await fetch(url, {
@@ -24,22 +19,19 @@ export default function Login() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
-
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error('Login failed');
       }
       const { data: token } = await response.json();
       localStorage.setItem("token", token);
       window.location = "/";
-
     } catch (error) {
       console.error('Login failed:', error.message);
     }
   };
 
-
+ // Contains textfield for user to input email addresss and password, when saved this calls handleSubmit()
   return (
     <Grid>
       <Paper elevation={10} style={{ padding: 40, height: '100%', width: '30%', margin: "15vh auto" }}>

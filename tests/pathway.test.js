@@ -20,6 +20,7 @@ afterAll(async () => {
   await new Promise(resolve => server.close(resolve));
 });
 
+// tests requests made to API endpoint "/pathways"
 describe('GET requests', () => {
   it('should respond with a json of all pathways if request successful', async () => {
     const res = await request(app).get('/pathways')

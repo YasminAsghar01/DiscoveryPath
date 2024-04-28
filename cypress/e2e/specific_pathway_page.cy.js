@@ -1,3 +1,4 @@
+// testing features on a specific pathway page
 describe('Specific Pathway Page', () => {
   it('Explore Specific Pathway Page', () => {
     cy.contains('Pathway A').should("exist").parents('.MuiCard-root').find('.MuiButton-root').click();

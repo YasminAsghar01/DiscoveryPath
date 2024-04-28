@@ -23,7 +23,7 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
+//this login test runs before all other tests
 before(() => {
     cy.visit('http://localhost:3000')
     cy.url().should('include', '/login')

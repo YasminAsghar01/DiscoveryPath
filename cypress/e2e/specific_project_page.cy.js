@@ -1,3 +1,4 @@
+// testing specific project page features
 describe('Specific Project Page', () => {
   it('Explore Specific Project Page', () => {
     cy.contains("Projects").should("exist").click();

@@ -1,12 +1,11 @@
-// seedData.js
 const mongoose = require('mongoose');
 const Pathway = require('../models/pathway');
 
-// Connect to MongoDB
+// connects to MongoDB
 mongoose.connect('mongodb://localhost:27017/discoverypath', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
-// Sample project data
+// adds sample project data
 const pathwaysData = [
   {
     name: 'Pathway A',
@@ -92,25 +91,23 @@ const pathwaysData = [
 ];
 
 
-async function seedPathways() {
+async function addPathways() {
   try {
-    // Remove existing projects
+
     await Pathway.deleteMany();
 
-    // Seed projects
     const seededPathways = await Pathway.create(pathwaysData);
 
     console.log('Projects seeded successfully:', seededPathways);
   } catch (error) {
     console.error('Error seeding projects:', error);
   } finally {
-    // Close the MongoDB connection
+
     mongoose.connection.close();
   }
 }
 
-// Call the seedProjects function
-seedPathways();
+addPathways();
 
 
 

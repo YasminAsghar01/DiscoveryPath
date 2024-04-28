@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
+//this creates the Project model
 const projectSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  start_date: { type: Date, default: Date.now }, // Date field with a default value of the current date
-  end_date: { type: Date, default: Date.now }, // Date field with a default value of the current date
+  start_date: { type: Date, default: Date.now },
+  end_date: { type: Date, default: Date.now },
   project_lead: { type: String, required: true },
-  technologies: { type: [String], default: [] }, // Array of technologies, initially empty
+  technologies: { type: [String], default: [] }, 
   openRoles: [
     {
       job_role: { type: String, required: true },

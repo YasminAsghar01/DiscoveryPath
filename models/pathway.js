@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
+//this creates the Pathway model
 const pathwaySchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  duration: { type: String, required: true }, // Date field with a default value of the current date
-  technologies: { type: [String], default: [] }, // Array of technologies, initially empty
+  duration: { type: String, required: true },
+  technologies: { type: [String], default: [] }, 
   certification: { type: String, required: false},
   link : { type: String, required: true},
   completedUsers: [{type: String}],

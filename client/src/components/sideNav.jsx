@@ -1,5 +1,6 @@
 import React from 'react';
 
+// creates a sidebar using the headings on the page, for quick navigation
 const SideNav = ({ headings }) => {
   return (
     <div style={{ top: 0, right: 0, paddingRight: 70, position: 'sticky', textAlign: 'left', borderLeft: '2px solid rgb(0, 51, 141)', height: 290 }}>

@@ -1,4 +1,4 @@
-# The DiscoveryPath
+# The Discovery Path
 This project helps users understand the ongoing projects in the team and provide project specific and team specific learning resources
 
 ## Setup

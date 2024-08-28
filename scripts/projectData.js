@@ -8,112 +8,84 @@ mongoose.connect('mongodb://localhost:27017/discoverypath', { useNewUrlParser: t
 // adds sample project data
 const projectsData = [
   {
-    name: 'Project A',
-    description: 'Description for Project A',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['JavaScript', 'GitHub', 'Docker'],
+    name: "Project A: Web Application Development",
+    description: "Develop a web application for managing tasks and projects.",
+    start_date: "2024-04-29T00:00:00.000Z",
+    end_date: "2024-07-29T00:00:00.000Z",
+    project_lead: "1445702",
+    technologies: ["JavaScript", "GitHub", "Docker"],
     openRoles: [
       {
-        job_role: 'Software Engineer Apprentice',
-        skill_requirement: ['JavaScript', 'GitHub', 'Docker'],
+        job_role: "Software Engineer Apprentice",
+        skill_requirement: ["JavaScript", "GitHub", "Docker"]
       },
       {
-        job_role: 'Senior Engineer',
-        skill_requirement: ['Leadership', 'Docker', 'Agile'],
-      },
+        job_role: "Senior Engineer",
+        skill_requirement: ["Leadership", "Docker", "Agile"]
+      }
     ],
-    teamMembers: ['1445701'],
-    recommended_pathway: ['Pathway A', 'Pathway B', 'Pathway C'],
+    teamMembers: ["1445701", "1445703"],
+    recommended_pathway: ["Pathway A", "Pathway B"]
   },
   {
-    name: 'Project B',
-    description: 'Description for Project B',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445701',
-    technologies: ['Python', 'GitHub', 'Docker'],
-    openRoles: [],
-    teamMembers: ['1445703' , '1445704'],
-    recommended_pathway: ['Pathway B', 'Pathway F'],
-  },
-  {
-    name: 'Project C',
-    description: 'Description for Project C',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['Figma', 'GitHub', 'AWS'],
+    name: "Project B: Mobile App Development",
+    description: "Create a mobile application for managing personal finances",
+    start_date: "2024-05-15T00:00:00.000Z",
+    end_date: "2024-09-15T00:00:00.000Z",
+    project_lead: "1445704",
+    technologies: ["React Native", "Firebase", "UI/UX Design"],
     openRoles: [
       {
-        job_role: 'Software Engineer',
-        skill_requirement: ['JavaScript', 'AWS', 'React'],
-      },
-      {
-        job_role: 'UI/UX Designer',
-        skill_requirement: ['Figma', 'AWS'],
-      },
+        job_role: "Mobile App Developer",
+        skill_requirement: ["React Native", "Firebase", "UI/UX Design"]
+      }
     ],
-    teamMembers: ['1445704'],
-    recommended_pathway: ['Pathway D'],
+    teamMembers: ["1445705", "1445702"],
+    recommended_pathway: ["Pathway D", "Pathway E"]
   },
   {
-    name: 'Project D',
-    description: 'Description for Project D',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445704',
-    technologies: ['Python', 'Cypress', 'Jest'],
+    name: "Project C: Data Analysis Platform",
+    description: "Build a platform for analyzing and visualizing large datasets.",
+    start_date: "2024-06-01T00:00:00.000Z",
+    end_date: "2024-11-01T00:00:00.000Z",
+    project_lead: "1445705",
+    technologies: ["Python", "Django", "PostgreSQL", "Data Visualization"],
     openRoles: [
       {
-        job_role: 'QA Engineer',
-        skill_requirement: ['Cypress', 'Jest'],
-      },
-      {
-        job_role: 'FrontEnd Tester',
-        skill_requirement: ['Python', 'Cypress'],
-      },
+        job_role: "Data Engineer",
+        skill_requirement: ["Python", "Django", "PostgreSQL"]
+      }
     ],
-    teamMembers: ['1445702', '1445701'],
+    teamMembers: ["1445701", "1445702", "1445703"],
     recommended_pathway: [],
   },
   {
-    name: 'Project E',
-    description: 'Description for Project E',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445701',
-    technologies: ['JavaScript', 'GitHub', 'Docker'],
+    name: "Project D: Cloud Migration Initiative",
+    description: "Migrate existing on-premises infrastructure to cloud services",
+    start_date: "2024-07-01T00:00:00.000Z",
+    end_date: "2024-12-01T00:00:00.000Z",
+    project_lead: "1445701",
+    technologies: ["AWS", "Azure", "Google Cloud Platform", "DevOps"],
     openRoles: [
       {
-        job_role: 'Senior Manager',
-        skill_requirement: ['JavaScript', 'Python'],
-      },
-      {
-        job_role: 'Software Engineer',
-        skill_requirement: ['Azure', 'GCP'],
-      },
-    ],
-    teamMembers: ['1445703', '1445705', '1445704'],
-    recommended_pathway: ['Pathway A', 'Pathway C'],
-  },
-  {
-    name: 'Project F',
-    description: 'Description for Project F',
-    start_date: new Date(),
-    end_date: new Date(),
-    project_lead: '1445702',
-    technologies: ['Python', 'GitHub', 'CloverDX'],
-    openRoles: [
-      {
-        job_role: 'Data Analyst',
-        skill_requirement: ['CloverDX', 'PowerBI'],
-      },
+        job_role: "Cloud Engineer",
+        skill_requirement: ["AWS", "Azure", "Google Cloud Platform", "DevOps"]
+      }
     ],
     teamMembers: [],
-    recommended_pathway: ['Pathway F', 'Pathway I'],
+    recommended_pathway: ["Pathway G"]
   },
+  {
+    name: "Project E: Blockchain Application",
+    description: "Design and develop a DApp leveraging blockchain technology for transactions.",
+    start_date: "2024-08-01T00:00:00.000Z",
+    end_date: "2025-02-01T00:00:00.000Z",
+    project_lead: "1445702",
+    technologies: ["Ethereum", "Solidity", "Web3.js", "Blockchain"],
+    openRoles: [],
+    teamMembers: ["1445705", "1445704"],
+    recommended_pathway: ["Pathway H"]
+  }
 ];
 
 
